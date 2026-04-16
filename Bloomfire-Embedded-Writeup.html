@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bloomfire Embedded — Product Overview & Integration Guide</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:        #0d1b35;
+      --teal:        #3ba8c4;
+      --teal-light:  #eaf6fa;
+      --teal-mid:    #c5e8f2;
+      --orange:      #e8671e;
+      --white:       #ffffff;
+      --bg:          #f5f7f9;
+      --border:      #e0e6ea;
+      --text:        #1a2b3c;
+      --text-soft:   #5a6e7f;
+      --text-meta:   #8fa3b1;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--white);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--navy); border-bottom: 3px solid var(--teal);
+      padding: 0 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 58px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 16px; font-weight: 700; text-decoration: none; }
+    .nav-badge { background: var(--orange); color: #fff; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 4px; letter-spacing: 0.4px; }
+    .nav-links { display: flex; gap: 6px; }
+    .nav-link {
+      padding: 6px 14px; border-radius: 5px; font-size: 12px; font-weight: 600;
+      color: rgba(255,255,255,0.6); text-decoration: none; transition: all 0.15s;
+    }
+    .nav-link:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #1a3060 60%, #0f2244 100%);
+      padding: 80px 40px 72px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 120%, rgba(59,168,196,0.18) 0%, transparent 70%);
+    }
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(59,168,196,0.15); border: 1px solid rgba(59,168,196,0.35);
+      color: var(--teal); font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 22px;
+    }
+    .hero h1 {
+      font-size: 48px; font-weight: 800; color: #fff; line-height: 1.15;
+      letter-spacing: -1px; margin-bottom: 18px; position: relative;
+    }
+    .hero h1 span { color: var(--teal); }
+    .hero-sub {
+      font-size: 18px; color: rgba(255,255,255,0.72); max-width: 640px;
+      margin: 0 auto 36px; line-height: 1.65;
+    }
+    .hero-ctas { display: flex; gap: 12px; justify-content: center; align-items: center; position: relative; }
+    .btn-primary {
+      padding: 13px 28px; background: var(--orange); color: #fff;
+      border: none; border-radius: 7px; font-size: 14px; font-weight: 700;
+      cursor: pointer; text-decoration: none; transition: all 0.15s;
+      display: inline-flex; align-items: center; gap: 7px;
+    }
+    .btn-primary:hover { background: #cf5a18; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232,103,30,0.35); }
+    .btn-ghost {
+      padding: 12px 24px; background: transparent; color: rgba(255,255,255,0.8);
+      border: 1.5px solid rgba(255,255,255,0.25); border-radius: 7px;
+      font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
+    .hero-stats {
+      display: flex; gap: 0; justify-content: center; margin-top: 56px;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+      background: rgba(255,255,255,0.05); max-width: 580px; margin-inline: auto;
+      overflow: hidden; position: relative;
+    }
+    .hero-stat {
+      flex: 1; padding: 20px 24px; text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    .hero-stat:last-child { border-right: none; }
+    .hero-stat-num { font-size: 28px; font-weight: 800; color: var(--teal); line-height: 1; margin-bottom: 5px; }
+    .hero-stat-label { font-size: 11px; color: rgba(255,255,255,0.55); font-weight: 500; }
+
+    /* ── SECTION WRAPPER ── */
+    .section { padding: 72px 40px; max-width: 1100px; margin: 0 auto; }
+    .section-sm { padding: 56px 40px; max-width: 1100px; margin: 0 auto; }
+
+    .section-label {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 12px;
+    }
+    .section-label::before { content: ''; width: 20px; height: 2px; background: var(--teal); border-radius: 2px; }
+
+    h2.section-heading {
+      font-size: 34px; font-weight: 800; color: var(--navy);
+      letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 14px;
+    }
+    .section-lead {
+      font-size: 16px; color: var(--text-soft); line-height: 1.7;
+      max-width: 680px; margin-bottom: 48px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider { border: none; border-top: 1px solid var(--border); }
+
+    /* ── VALUE PROPS ── */
+    .vp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .vp-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 12px; padding: 28px 24px;
+      transition: all 0.2s;
+    }
+    .vp-card:hover { border-color: var(--teal-mid); box-shadow: 0 4px 20px rgba(59,168,196,0.12); transform: translateY(-2px); }
+    .vp-icon {
+      width: 46px; height: 46px; background: var(--teal-light);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px; border: 1px solid var(--teal-mid);
+    }
+    .vp-card h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .vp-card p { font-size: 13.5px; color: var(--text-soft); line-height: 1.6; }
+
+    /* ── HOW IT WORKS ── */
+    .bg-navy { background: var(--navy); }
+    .bg-light { background: var(--bg); }
+
+    .how-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .how-steps { display: flex; flex-direction: column; gap: 0; }
+    .how-step {
+      display: flex; gap: 20px; padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .how-step:last-child { border-bottom: none; }
+    .how-step-num {
+      width: 36px; height: 36px; background: var(--teal); color: #fff;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; flex-shrink: 0; margin-top: 2px;
+    }
+    .how-step h4 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
+    .how-step p { font-size: 13px; color: var(--text-soft); line-height: 1.6; }
+    .how-step code {
+      background: var(--teal-light); color: var(--teal);
+      padding: 1px 6px; border-radius: 4px; font-size: 12px; font-family: monospace;
+    }
+
+    /* ── MODES ── */
+    .modes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 48px; }
+    .mode-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 28px 24px; position: relative;
+      transition: all 0.2s;
+    }
+    .mode-card:hover { border-color: var(--teal); box-shadow: 0 4px 20px rgba(59,168,196,0.12); }
+    .mode-card.featured { border-color: var(--teal); background: var(--teal-light); }
+    .mode-tag {
+      position: absolute; top: 16px; right: 16px;
+      background: var(--teal); color: #fff;
+      font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 4px;
+      letter-spacing: 0.4px; text-transform: uppercase;
+    }
+    .mode-card h3 { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+    .mode-card .mode-sub { font-size: 13px; color: var(--text-soft); margin-bottom: 16px; line-height: 1.6; }
+    .mode-features { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .mode-features li {
+      display: flex; align-items: flex-start; gap: 9px;
+      font-size: 13px; color: var(--text-soft);
+    }
+    .mode-features li::before {
+      content: '✓'; color: var(--teal); font-weight: 800;
+      font-size: 12px; flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* ── DEMO SECTION ── */
+    .demo-outer {
+      background: var(--navy);
+      padding: 72px 40px;
+    }
+    .demo-inner { max-width: 1100px; margin: 0 auto; }
+    .demo-header { text-align: center; margin-bottom: 48px; }
+    .demo-header .section-label { color: var(--teal); }
+    .demo-header h2 { color: #fff; }
+    .demo-header .section-lead { color: rgba(255,255,255,0.65); margin: 14px auto 0; }
+
+    .demo-tabs-wrap {
+      display: flex; gap: 8px; justify-content: center; margin-bottom: 32px;
+    }
+    .demo-tab {
+      padding: 8px 20px; border-radius: 6px; font-size: 12px; font-weight: 700;
+      cursor: pointer; border: 1.5px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.55); background: transparent;
+      transition: all 0.15s; font-family: inherit; letter-spacing: 0.3px;
+    }
+    .demo-tab.active { background: var(--teal); border-color: var(--teal); color: #fff; }
+    .demo-tab:hover:not(.active) { border-color: rgba(255,255,255,0.4); color: #fff; }
+
+    .demo-panels { position: relative; }
+    .demo-panel { display: none; }
+    .demo-panel.active { display: block; }
+
+    .demo-frame {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; padding: 28px;
+      display: flex; align-items: flex-start; gap: 40px;
+    }
+    .demo-widget-col { flex: 0 0 auto; }
+    .demo-desc-col { flex: 1; padding-top: 8px; }
+    .demo-desc-col h3 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+    .demo-desc-col p { font-size: 13.5px; color: rgba(255,255,255,0.65); line-height: 1.7; margin-bottom: 16px; }
+    .demo-chips-wrap { }
+    .demo-chips-label { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 8px; }
+    .demo-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .demo-chip {
+      padding: 6px 13px; background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15); border-radius: 20px;
+      font-size: 11.5px; color: rgba(255,255,255,0.7); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .demo-chip:hover { background: rgba(59,168,196,0.2); border-color: var(--teal); color: var(--teal); }
+
+    .demo-caption {
+      margin-top: 16px; text-align: center;
+      font-size: 11px; color: rgba(255,255,255,0.3); font-style: italic;
+    }
+
+    /* ── USE CASES ── */
+    .uc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .uc-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden; transition: all 0.2s;
+    }
+    .uc-card:hover { border-color: var(--teal-mid); box-shadow: 0 4px 20px rgba(59,168,196,0.1); transform: translateY(-2px); }
+    .uc-header {
+      background: var(--navy); padding: 20px 20px 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .uc-header-icon {
+      width: 38px; height: 38px; background: rgba(59,168,196,0.2);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .uc-header h3 { font-size: 14px; font-weight: 700; color: #fff; }
+    .uc-header span { font-size: 11px; color: rgba(255,255,255,0.45); }
+    .uc-body { padding: 18px 20px; }
+    .uc-body p { font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-bottom: 12px; }
+    .uc-quote {
+      background: var(--bg); border-left: 3px solid var(--teal);
+      border-radius: 0 6px 6px 0; padding: 10px 13px;
+      font-size: 12.5px; color: var(--text); line-height: 1.55; font-style: italic;
+    }
+    .uc-quote cite { display: block; margin-top: 7px; font-size: 11px; font-style: normal; color: var(--text-meta); font-weight: 600; }
+
+    /* ── INSTALL / TECH ── */
+    .install-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+    .code-card {
+      background: var(--navy); border-radius: 10px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .code-card-header {
+      background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 10px 16px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .code-card-title { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5); font-family: monospace; }
+    .copy-btn {
+      padding: 4px 12px; background: var(--teal); color: #fff;
+      border: none; border-radius: 4px; font-size: 11px; font-weight: 600;
+      cursor: pointer; transition: background 0.15s; font-family: inherit;
+    }
+    .copy-btn:hover { background: #2a8fab; }
+    .copy-btn.copied { background: #4caf8a; }
+    pre {
+      padding: 18px 16px; font-family: 'SF Mono','Fira Code','Consolas',monospace;
+      font-size: 12.5px; line-height: 1.8; overflow-x: auto;
+      color: #a8c7d8; white-space: pre;
+    }
+    .tag  { color: #7dd3fc; }
+    .attr { color: #86efac; }
+    .val  { color: #fde68a; }
+    .cm   { color: #4a6880; font-style: italic; }
+    .kw   { color: #c084fc; }
+    .str  { color: #fde68a; }
+
+    .install-steps { display: flex; flex-direction: column; gap: 16px; }
+    .install-step {
+      display: flex; gap: 16px; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 10px; padding: 18px;
+      transition: all 0.15s;
+    }
+    .install-step:hover { border-color: var(--teal-mid); }
+    .install-step-num {
+      width: 30px; height: 30px; background: var(--teal); color: #fff;
+      border-radius: 50%; font-size: 12px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .install-step h4 { font-size: 13.5px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .install-step p { font-size: 12.5px; color: var(--text-soft); line-height: 1.55; }
+    .install-step code {
+      background: var(--teal-light); color: var(--teal);
+      padding: 1px 6px; border-radius: 4px; font-size: 11.5px; font-family: monospace;
+    }
+
+    /* ── ATTRIBUTES TABLE ── */
+    .attr-table-wrap {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden; margin-top: 24px;
+    }
+    .attr-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .attr-table th {
+      background: var(--bg); padding: 10px 16px; text-align: left;
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; color: var(--text-meta);
+      border-bottom: 1px solid var(--border);
+    }
+    .attr-table td { padding: 12px 16px; border-bottom: 1px solid #edf1f4; color: var(--text); }
+    .attr-table tr:last-child td { border-bottom: none; }
+    .attr-table tr:hover td { background: var(--bg); }
+    .attr-name { font-family: monospace; font-size: 12.5px; color: var(--teal); font-weight: 600; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+    .badge-req { background: #fef3c7; color: #92400e; }
+    .badge-opt { background: #edf1f4; color: var(--text-meta); }
+    .attr-table code { background: var(--teal-light); color: var(--teal); padding: 1px 5px; border-radius: 3px; font-size: 11.5px; }
+
+    /* ── EVENTS / FRAMEWORK ── */
+    .fw-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 32px; }
+    .fw-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 18px 16px; text-align: center;
+      transition: all 0.15s;
+    }
+    .fw-card:hover { border-color: var(--teal-mid); background: var(--teal-light); }
+    .fw-card .fw-icon { font-size: 26px; margin-bottom: 8px; }
+    .fw-card h4 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .fw-card p { font-size: 11.5px; color: var(--text-soft); line-height: 1.5; }
+
+    /* ── SECURITY ── */
+    .security-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .sec-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 10px; padding: 22px 20px;
+    }
+    .sec-card .sec-icon {
+      width: 40px; height: 40px; background: var(--teal-light);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 12px; border: 1px solid var(--teal-mid);
+    }
+    .sec-card h4 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+    .sec-card p { font-size: 12.5px; color: var(--text-soft); line-height: 1.6; }
+
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; background: var(--white); border: none;
+      font-size: 14px; font-weight: 600; color: var(--navy);
+      cursor: pointer; text-align: left; font-family: inherit;
+      transition: background 0.15s; gap: 16px;
+    }
+    .faq-q:hover { background: var(--bg); }
+    .faq-q.open { background: var(--teal-light); color: var(--teal); }
+    .faq-q .faq-chev { flex-shrink: 0; transition: transform 0.2s; color: var(--text-meta); }
+    .faq-q.open .faq-chev { transform: rotate(180deg); color: var(--teal); }
+    .faq-a {
+      display: none; padding: 0 20px 18px; background: var(--teal-light);
+      font-size: 13.5px; color: var(--text-soft); line-height: 1.7;
+    }
+    .faq-a.open { display: block; }
+
+    /* ── CTA ── */
+    .cta-band {
+      background: linear-gradient(135deg, var(--navy) 0%, #1a3060 100%);
+      padding: 72px 40px; text-align: center;
+    }
+    .cta-band h2 { font-size: 36px; font-weight: 800; color: #fff; margin-bottom: 14px; }
+    .cta-band p { font-size: 16px; color: rgba(255,255,255,0.65); max-width: 560px; margin: 0 auto 32px; line-height: 1.65; }
+    .cta-actions { display: flex; gap: 12px; justify-content: center; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      background: var(--navy); border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 28px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .site-footer-logo { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 600; }
+    .site-footer-note { font-size: 11px; color: rgba(255,255,255,0.25); }
+
+    /* ── SCREENSHOT PLACEHOLDERS ── */
+    .screenshot-wrap {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(13,27,53,0.08);
+    }
+    .screenshot-bar {
+      background: var(--navy); padding: 8px 14px; display: flex; align-items: center; gap: 7px;
+    }
+    .screenshot-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .screenshot-url {
+      flex: 1; background: rgba(255,255,255,0.08); border-radius: 4px;
+      padding: 4px 10px; font-size: 11px; color: rgba(255,255,255,0.35); margin: 0 8px; font-family: monospace;
+    }
+    .screenshot-content { padding: 20px; display: flex; justify-content: center; }
+
+    /* ── INLINE CALLOUT ── */
+    .callout {
+      background: var(--teal-light); border-left: 4px solid var(--teal);
+      border-radius: 0 8px 8px 0; padding: 14px 18px;
+      font-size: 13.5px; color: var(--text); line-height: 1.65;
+      margin: 24px 0;
+    }
+    .callout strong { color: var(--navy); }
+
+    /* Responsive */
+    @media (max-width: 860px) {
+      .vp-grid, .uc-grid, .security-grid { grid-template-columns: 1fr; }
+      .how-grid, .install-grid, .modes-grid { grid-template-columns: 1fr; }
+      .demo-frame { flex-direction: column; }
+      .fw-grid { grid-template-columns: repeat(2,1fr); }
+      .hero h1 { font-size: 34px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ NAV ═══════════════════════════════════════ -->
+<nav class="nav">
+  <a href="#" class="nav-logo">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <line x1="12" y1="2" x2="12" y2="22" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="2" y1="12" x2="22" y2="12" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="19.07" y1="4.93" x2="4.93" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+      <circle cx="12" cy="2" r="1.3" fill="#3ba8c4"/><circle cx="12" cy="22" r="1.3" fill="#3ba8c4"/>
+      <circle cx="2" cy="12" r="1.3" fill="#3ba8c4"/><circle cx="22" cy="12" r="1.3" fill="#3ba8c4"/>
+    </svg>
+    Bloomfire Embedded
+    <span class="nav-badge">PREVIEW</span>
+  </a>
+  <div class="nav-links">
+    <a href="#value" class="nav-link">Why Embed</a>
+    <a href="#modes" class="nav-link">Modes</a>
+    <a href="#demo" class="nav-link">Live Demo</a>
+    <a href="#install" class="nav-link">Integration</a>
+    <a href="#faq" class="nav-link">FAQ</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════ HERO ═══════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-kicker">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+    Introducing Bloomfire Embedded
+  </div>
+  <h1>Your knowledge base,<br/><span>anywhere your team works</span></h1>
+  <p class="hero-sub">
+    A lightweight JavaScript widget that brings Bloomfire's search and Synapse AI directly
+    into any application — no redirects, no context-switching, no separate login.
+  </p>
+  <div class="hero-ctas">
+    <a href="#demo" class="btn-primary">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><polygon points="5,3 19,12 5,21" fill="white"/></svg>
+      See it live
+    </a>
+    <a href="#install" class="btn-ghost">View integration guide →</a>
+  </div>
+  <div class="hero-stats" style="margin-top:52px;">
+    <div class="hero-stat">
+      <div class="hero-stat-num">3</div>
+      <div class="hero-stat-label">lines to embed</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">0</div>
+      <div class="hero-stat-label">build steps required</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">Any</div>
+      <div class="hero-stat-label">framework supported</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ VALUE ═══════════════════════════════════════ -->
+<section class="section" id="value">
+  <div class="section-label">The business case</div>
+  <h2 class="section-heading">Stop sending users away to find answers</h2>
+  <p class="section-lead">
+    Every time an employee or customer leaves your app to search Bloomfire, you lose them. Bloomfire Embedded
+    keeps knowledge right where decisions are made — inside your CRM, support portal, agent desktop, or intranet.
+  </p>
+
+  <div class="vp-grid">
+    <div class="vp-card">
+      <div class="vp-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="#3ba8c4" stroke-width="1.8"/>
+          <path d="M12 8v4l3 3" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3>Reduce time-to-answer</h3>
+      <p>Agents and employees get instant, AI-synthesized answers without leaving their primary tool. Less tab-switching means faster resolution times and fewer escalations.</p>
+    </div>
+    <div class="vp-card">
+      <div class="vp-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="9" cy="7" r="4" stroke="#3ba8c4" stroke-width="1.8"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3>Drive Bloomfire adoption</h3>
+      <p>The biggest barrier to knowledge tool adoption is friction. When Bloomfire is embedded in the tools people already use daily, usage climbs without any change management effort.</p>
+    </div>
+    <div class="vp-card">
+      <div class="vp-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h3>Measurable ROI</h3>
+      <p>Every search, every AI interaction, every source click is a trackable event. Surface adoption metrics to stakeholders and tie knowledge usage directly to business outcomes.</p>
+    </div>
+    <div class="vp-card">
+      <div class="vp-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="11" width="18" height="11" rx="2" stroke="#3ba8c4" stroke-width="1.8"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3>Security-first design</h3>
+      <p>Authentication is silent and token-based. Users never see a Bloomfire login screen — they get personalized, permissioned results automatically based on their existing identity.</p>
+    </div>
+    <div class="vp-card">
+      <div class="vp-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h3>Enterprise-grade reliability</h3>
+      <p>The widget is a thin shell that calls the same Bloomfire APIs powering the full product. No separate infrastructure, no duplicate data — always in sync with your source of truth.</p>
+    </div>
+    <div class="vp-card">
+      <div class="vp-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h3>Zero maintenance overhead</h3>
+      <p>Updates to the widget are delivered automatically via the CDN. Your integration stays current with every new Bloomfire feature without any action required from your dev team.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ═══════════════════════════════════════ USE CASES ═══════════════════════════════════════ -->
+<section class="section bg-light" style="background:var(--bg);padding-block:72px;" id="usecases">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-label">Who it's for</div>
+    <h2 class="section-heading">Built for every team that needs answers fast</h2>
+    <p class="section-lead">
+      Bloomfire Embedded adapts to every context. Here is how three of our most common customer profiles are already using it.
+    </p>
+    <div class="uc-grid">
+      <div class="uc-card">
+        <div class="uc-header">
+          <div class="uc-header-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2z" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Insurance & Claims</h3>
+            <span>Contact centers · Agent desktops</span>
+          </div>
+        </div>
+        <div class="uc-body">
+          <p>Claims agents handle dozens of policy questions per shift. With Bloomfire embedded in their agent desktop, they get instant answers about state requirements, adjuster SOPs, and documentation checklists — without leaving the claim record.</p>
+        </div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-header">
+          <div class="uc-header-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="3" width="20" height="14" rx="2" stroke="#3ba8c4" stroke-width="1.8"/>
+              <path d="M8 21h8M12 17v4" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Sales Enablement</h3>
+            <span>CRM · Sales portals</span>
+          </div>
+        </div>
+        <div class="uc-body">
+          <p>Reps need competitive intel, objection-handling guides, and product FAQs in the moment — not after the call. Embedding Bloomfire in Salesforce or HubSpot means the right content surfaces contextually, right next to the opportunity.</p>
+        </div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-header">
+          <div class="uc-header-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Customer Support</h3>
+            <span>Help centers · Self-service portals</span>
+          </div>
+        </div>
+        <div class="uc-body">
+          <p>Deflect tickets by embedding Bloomfire's Synapse AI directly in your customer-facing help center. Customers get conversational answers from verified content before a ticket is ever submitted.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ MODES ═══════════════════════════════════════ -->
+<section class="section" id="modes">
+  <div class="section-label">Two powerful modes</div>
+  <h2 class="section-heading">Search and converse — all in one widget</h2>
+  <p class="section-lead">
+    Bloomfire Embedded ships with two interaction modes. Both are available in the same widget — users can switch between them freely without reloading the page.
+  </p>
+  <div class="modes-grid">
+    <div class="mode-card featured">
+      <span class="mode-tag">Core</span>
+      <h3>Search</h3>
+      <p class="mode-sub">Semantic, intelligent search powered by Bloomfire's vector search engine. Results are ranked by relevance score — not just keyword frequency — so users always surface the most meaningful content.</p>
+      <ul class="mode-features">
+        <li>Semantic relevance scoring on every result (e.g. 97% match)</li>
+        <li>Filter by content type: Posts, Series, Q&amp;A</li>
+        <li>Highlighted matched terms within snippets</li>
+        <li>Tag-level metadata and view counts on each result</li>
+        <li>Related searches panel for discovery</li>
+        <li>One-click deep link to the full Bloomfire article</li>
+      </ul>
+    </div>
+    <div class="mode-card">
+      <span class="mode-tag" style="background:#6941c6;">Synapse AI</span>
+      <h3>Synapse</h3>
+      <p class="mode-sub">Full conversational AI with memory across turns. Users ask follow-up questions, drill into specifics, and get progressively richer answers — all in a flowing chat interface.</p>
+      <ul class="mode-features">
+        <li>Multi-turn conversation with full context retention</li>
+        <li>Follow-up questions build on prior answers naturally</li>
+        <li>Source pills below each response for auditability</li>
+        <li>Typing indicator and thinking trace give transparency</li>
+        <li>"New conversation" button resets context cleanly</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Flexible by design.</strong> Set the default mode with the <code style="background:#c5e8f2;color:#3ba8c4;padding:1px 6px;border-radius:3px;font-size:12px;font-family:monospace">mode</code> attribute — <code style="background:#c5e8f2;color:#3ba8c4;padding:1px 5px;border-radius:3px;font-size:12px;font-family:monospace">"search"</code> or <code style="background:#c5e8f2;color:#3ba8c4;padding:1px 5px;border-radius:3px;font-size:12px;font-family:monospace">"synapse"</code> — or let users toggle freely within the widget. You control the experience.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ LIVE DEMO ═══════════════════════════════════════ -->
+<div class="demo-outer" id="demo">
+  <div class="demo-inner">
+    <div class="demo-header">
+      <div class="section-label" style="justify-content:center;">Live interactive demo</div>
+      <h2 class="section-heading" style="color:#fff;text-align:center;">Try it right now</h2>
+      <p class="section-lead" style="text-align:center;">
+        The widget below is the actual Bloomfire Embedded component — not a screenshot. Type a query, use the suggested chips, and switch between modes to explore the full experience.
+      </p>
+    </div>
+
+    <div class="demo-tabs-wrap">
+      <button class="demo-tab active" onclick="switchDemo('search',this)">Search mode</button>
+      <button class="demo-tab" onclick="switchDemo('synapse',this)">Synapse mode</button>
+    </div>
+
+    <div class="demo-panels">
+
+      <!-- Search panel -->
+      <div class="demo-panel active" id="panel-search">
+        <div class="demo-frame">
+          <div class="demo-widget-col">
+            <bloomfire-search id="widget-search" mode="search" community-id="Demo" token="preview-token"></bloomfire-search>
+          </div>
+          <div class="demo-desc-col">
+            <h3>Search — semantic, intelligent knowledge retrieval</h3>
+            <p>Bloomfire's search goes far beyond keyword matching. Every query is processed semantically — the engine understands intent and concept, not just literal words — and ranks results by a relevance match score.</p>
+            <p>Users can filter results by content type (Posts, Series, Q&amp;A), see highlighted matched terms, explore related searches, and click directly into the full Bloomfire article. No context-switching required.</p>
+            <div class="demo-chips-wrap">
+              <div class="demo-chips-label">Try a search query</div>
+              <div class="demo-chips">
+                <span class="demo-chip" onclick="fireChip('widget-search','homeowner claim process')">Homeowner claim process</span>
+                <span class="demo-chip" onclick="fireChip('widget-search','michigan auto insurance')">Michigan auto insurance</span>
+                <span class="demo-chip" onclick="fireChip('widget-search','adjuster assignment guidelines')">Adjuster guidelines</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="demo-caption">Using mock Nationwide Insurance community data · In production, results come from your live Bloomfire community</p>
+      </div>
+
+      <!-- Synapse panel -->
+      <div class="demo-panel" id="panel-synapse">
+        <div class="demo-frame">
+          <div class="demo-widget-col">
+            <bloomfire-search id="widget-synapse" mode="synapse" community-id="Demo" token="preview-token"></bloomfire-search>
+          </div>
+          <div class="demo-desc-col">
+            <h3>Synapse — conversational AI with memory</h3>
+            <p>Synapse mode turns the widget into a full AI assistant. Users start a conversation, ask follow-up questions, and get progressively more specific answers — all without reloading the page or losing context.</p>
+            <p>After the first answer, try asking a follow-up like <em>"What about the mini-tort rule?"</em> or <em>"What if the adjuster isn't available?"</em> to see conversational memory in action.</p>
+            <div class="demo-chips-wrap">
+              <div class="demo-chips-label">Start a conversation</div>
+              <div class="demo-chips">
+                <span class="demo-chip" onclick="fireChip('widget-synapse','how do I process a homeowner claim')">Walk me through a homeowner claim</span>
+                <span class="demo-chip" onclick="fireChip('widget-synapse','what are the michigan auto insurance requirements')">Michigan auto requirements</span>
+                <span class="demo-chip" onclick="fireChip('widget-synapse','adjuster assignment guidelines')">Adjuster assignment guidelines</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="demo-caption">Using mock Nationwide Insurance community data · In production, results come from your live Bloomfire community</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ INTEGRATION ═══════════════════════════════════════ -->
+<section class="section" id="install">
+  <div class="section-label">Developer integration guide</div>
+  <h2 class="section-heading">Up and running in under 5 minutes</h2>
+  <p class="section-lead">
+    Bloomfire Embedded is a standard Web Component — no npm package, no build step, no framework dependency. If you can add a <code style="background:var(--teal-light);color:var(--teal);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:13px">&lt;script&gt;</code> tag, you can embed Bloomfire.
+  </p>
+
+  <div class="install-grid">
+    <div>
+      <div class="install-steps">
+        <div class="install-step">
+          <div class="install-step-num">1</div>
+          <div>
+            <h4>Load the widget script</h4>
+            <p>Add one <code>&lt;script&gt;</code> tag to your page — typically in <code>&lt;head&gt;</code> or just before <code>&lt;/body&gt;</code>. This registers the <code>&lt;bloomfire-search&gt;</code> custom element globally.</p>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="install-step-num">2</div>
+          <div>
+            <h4>Place the element</h4>
+            <p>Drop <code>&lt;bloomfire-search&gt;</code> anywhere in your HTML. It renders inline where you place it — in a sidebar, modal, drawer, or full-width panel. Works in React, Angular, Vue, and plain HTML.</p>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="install-step-num">3</div>
+          <div>
+            <h4>Pass your credentials</h4>
+            <p>Set <code>community-id</code> and <code>token</code> as HTML attributes. The widget authenticates silently — no Bloomfire login screen is ever shown to the end user.</p>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="install-step-num">4</div>
+          <div>
+            <h4>Listen to events (optional)</h4>
+            <p>Subscribe to the <code>bloomfire-search</code> custom event to capture query strings and result counts for your own analytics pipeline.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-card">
+      <div class="code-card-header">
+        <span class="code-card-title">embed.html</span>
+        <button class="copy-btn" id="copy-install" onclick="copyInstall()">Copy code</button>
+      </div>
+      <pre
+><span class="cm">&lt;!-- Step 1: Load once per page --&gt;</span>
+<span class="tag">&lt;script </span><span class="attr">src</span><span class="tag">=</span><span class="val">"https://cdn.bloomfire.com/widget/bloomfire-search.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+
+<span class="cm">&lt;!-- Step 2 + 3: Place element with credentials --&gt;</span>
+<span class="tag">&lt;bloomfire-search</span>
+  <span class="attr">mode</span><span class="tag">=</span><span class="val">"search"</span>
+  <span class="attr">community-id</span><span class="tag">=</span><span class="val">"YOUR_COMMUNITY_ID"</span>
+  <span class="attr">token</span><span class="tag">=</span><span class="val">"YOUR_AUTH_TOKEN"</span>
+<span class="tag">&gt;&lt;/bloomfire-search&gt;</span>
+
+<span class="cm">&lt;!-- Step 4 (optional): Analytics event listener --&gt;</span>
+<span class="tag">&lt;script&gt;</span>
+  <span class="attr">document</span>.querySelector(<span class="val">'bloomfire-search'</span>)
+    .addEventListener(<span class="val">'bloomfire-search'</span>, (e) <span class="tag">=&gt;</span> {
+      console.log(<span class="val">'Query:'</span>, e.detail.query);
+      console.log(<span class="val">'Results:'</span>, e.detail.resultCount);
+    });
+<span class="tag">&lt;/script&gt;</span></pre>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ── ATTRIBUTES TABLE ── -->
+<section class="section-sm" style="max-width:1100px;margin:0 auto;padding:48px 40px;">
+  <div class="section-label">Configuration reference</div>
+  <h2 class="section-heading" style="font-size:26px;">Attributes</h2>
+  <div class="attr-table-wrap">
+    <table class="attr-table">
+      <thead>
+        <tr>
+          <th>Attribute</th>
+          <th>Type</th>
+          <th>Required</th>
+          <th>Values / Default</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="attr-name">community-id</span></td>
+          <td>String</td>
+          <td><span class="badge badge-req">Required</span></td>
+          <td>Your community slug</td>
+          <td>Identifies your Bloomfire community. All search results and AI answers are scoped to this community.</td>
+        </tr>
+        <tr>
+          <td><span class="attr-name">token</span></td>
+          <td>String</td>
+          <td><span class="badge badge-req">Required</span></td>
+          <td>JWT or API token</td>
+          <td>Auth token for the current user. Passed to the Bloomfire API silently — users never see a login screen. Generate via the Bloomfire API or SSO flow.</td>
+        </tr>
+        <tr>
+          <td><span class="attr-name">mode</span></td>
+          <td>String</td>
+          <td><span class="badge badge-opt">Optional</span></td>
+          <td><code>"search"</code> · <code>"synapse"</code></td>
+          <td>Sets the default interaction mode. <code>search</code> shows semantic results with relevance scores and filters; <code>synapse</code> opens the full conversational AI experience. Users can switch between both modes in-widget. Defaults to <code>"search"</code> if omitted.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── EVENTS ── -->
+<section class="section-sm" style="max-width:1100px;margin:0 auto;padding:0 40px 48px;">
+  <div class="section-label">JavaScript events</div>
+  <h2 class="section-heading" style="font-size:26px;">Analytics integration</h2>
+  <p style="font-size:14px;color:var(--text-soft);line-height:1.7;margin-bottom:24px;max-width:680px;">
+    The widget emits a native Custom Event that you can intercept with a standard <code style="background:var(--teal-light);color:var(--teal);padding:1px 5px;border-radius:3px;font-family:monospace;font-size:12px">addEventListener</code> call.
+    Use this to forward query data to your analytics platform (Google Analytics, Segment, Mixpanel, etc.).
+  </p>
+  <div class="code-card" style="max-width:680px;">
+    <div class="code-card-header">
+      <span class="code-card-title">analytics.js</span>
+    </div>
+    <pre
+><span class="attr">document</span>.querySelector(<span class="val">'bloomfire-search'</span>)
+  .addEventListener(<span class="val">'bloomfire-search'</span>, (e) <span class="tag">=&gt;</span> {
+
+    <span class="cm">// e.detail.query       — the user's search string</span>
+    <span class="cm">// e.detail.resultCount — number of results returned</span>
+    <span class="cm">// e.detail.mode        — 'search' or 'synapse'</span>
+
+    analytics.track(<span class="val">'Bloomfire Search'</span>, {
+      query:       e.detail.query,
+      results:     e.detail.resultCount,
+      mode:        e.detail.mode,
+      community:   e.detail.communityId,
+    });
+  });</pre>
+  </div>
+</section>
+
+<!-- ── FRAMEWORK COMPAT ── -->
+<section class="section-sm" style="max-width:1100px;margin:0 auto;padding:0 40px 72px;">
+  <div class="section-label">Framework compatibility</div>
+  <h2 class="section-heading" style="font-size:26px;">Works everywhere</h2>
+  <p style="font-size:14px;color:var(--text-soft);line-height:1.7;margin-bottom:0;max-width:680px;">
+    Because Bloomfire Embedded is a native Web Component, it is framework-agnostic. It requires zero wrappers, zero adapters, and zero peer dependencies.
+  </p>
+  <div class="fw-grid">
+    <div class="fw-card">
+      <div class="fw-icon">⚛️</div>
+      <h4>React</h4>
+      <p>Use as a JSX element. Pass token via attribute or <code>ref</code> for dynamic values.</p>
+    </div>
+    <div class="fw-card">
+      <div class="fw-icon">🅰️</div>
+      <h4>Angular</h4>
+      <p>Add <code>CUSTOM_ELEMENTS_SCHEMA</code> to your module. Drop the element in any template.</p>
+    </div>
+    <div class="fw-card">
+      <div class="fw-icon">💚</div>
+      <h4>Vue</h4>
+      <p>Register as a custom element or use <code>isCustomElement</code> in Vite config. No wrapper needed.</p>
+    </div>
+    <div class="fw-card">
+      <div class="fw-icon">📄</div>
+      <h4>Plain HTML</h4>
+      <p>Copy the embed snippet directly. No build tools, no npm, no JavaScript framework required.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ SECURITY ═══════════════════════════════════════ -->
+<section style="background:var(--bg);padding:72px 40px;" id="security">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-label">Security & compliance</div>
+    <h2 class="section-heading">Enterprise-ready from day one</h2>
+    <p class="section-lead">
+      Bloomfire Embedded inherits the full security posture of the Bloomfire platform. No new attack surface. No new data storage. No new compliance scope.
+    </p>
+    <div class="security-grid">
+      <div class="sec-card">
+        <div class="sec-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="11" width="18" height="11" rx="2" stroke="#3ba8c4" stroke-width="1.8"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h4>Token-based auth</h4>
+        <p>Authentication uses a short-lived JWT or API token passed as an HTML attribute. The widget never stores credentials. Token rotation and expiry are handled by your existing auth flow.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h4>Shadow DOM isolation</h4>
+        <p>The widget runs inside a Shadow DOM — its styles and scripts are fully isolated from the host page. No CSS bleed, no global namespace collisions, no XSS vectors from the host app.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="#3ba8c4" stroke-width="1.8"/>
+            <line x1="12" y1="8" x2="12" y2="12" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="12" y1="16" x2="12.01" y2="16" stroke="#3ba8c4" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h4>Permission-scoped results</h4>
+        <p>The token passed to the widget carries the user's Bloomfire permissions. Results are automatically scoped to what that user is authorized to see — community, group, and document-level permissions all apply.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h4>No data residency impact</h4>
+        <p>The widget is a UI layer only. All data remains in Bloomfire's existing storage, subject to the same retention, residency, and encryption policies already configured for your account.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#3ba8c4" stroke-width="1.8"/>
+            <polyline points="14,2 14,8 20,8" stroke="#3ba8c4" stroke-width="1.8"/>
+          </svg>
+        </div>
+        <h4>Full audit trail</h4>
+        <p>Every search query made through the widget is logged in Bloomfire's audit log — same as a search performed in the full product. Compliance teams have complete visibility with no gaps.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#3ba8c4" stroke-width="1.8"/>
+            <path d="M2 12H22M12 2C9.33 5.33 8 8.67 8 12C8 15.33 9.33 18.67 12 22M12 2C14.67 5.33 16 8.67 16 12C16 15.33 14.67 18.67 12 22" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h4>CSP compatible</h4>
+        <p>The widget loads from a fixed, versioned CDN URL. Add it to your Content Security Policy whitelist once and it works. No inline scripts, no dynamic <code>eval()</code>, no third-party calls outside Bloomfire APIs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ FAQ ═══════════════════════════════════════ -->
+<section class="section" id="faq">
+  <div class="section-label">Frequently asked questions</div>
+  <h2 class="section-heading">Questions from customers &amp; prospects</h2>
+  <p class="section-lead">Answers to the questions sales, IT, and technical teams ask most often.</p>
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Does this require a separate Bloomfire license or subscription?
+        <svg class="faq-chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a">
+        No. Bloomfire Embedded is an extension of your existing Bloomfire subscription. The widget calls the same APIs that power the full product and consumes the same seat licenses. There is no add-on fee for embedding — it is included as part of the platform.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Can we white-label or rebrand the widget?
+        <svg class="faq-chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a">
+        Yes, with the Enterprise plan. White-labeling options include replacing the Bloomfire logo with your own, customizing the accent color palette, and suppressing the "Powered by Bloomfire" footer. Contact your Customer Success Manager to enable these options for your account.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How does authentication work for end users who aren't Bloomfire users?
+        <svg class="faq-chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a">
+        The token you pass in the <code>token</code> attribute is generated server-side by your application. You can create a service account or a guest token via the Bloomfire API that maps to a permission level — not a named user. This is ideal for customer-facing portals where end users are not direct Bloomfire subscribers. The widget handles auth transparently; the end user never sees a Bloomfire login screen.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What happens if the CDN is unavailable?
+        <svg class="faq-chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a">
+        The widget script loads asynchronously and will not block page render. If the CDN is unreachable, the <code>&lt;bloomfire-search&gt;</code> element simply remains unregistered and renders nothing — your host application continues to function normally. For mission-critical deployments, the script can also be self-hosted from your own CDN or asset server.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Can the widget access content outside my community?
+        <svg class="faq-chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a">
+        No. Every request is scoped to the <code>community-id</code> you specify, and the token you pass enforces the user's permission level within that community. A token issued for Community A cannot access Community B's content. This scoping is enforced at the API level, not just in the widget UI.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How large is the widget script? Will it impact page performance?
+        <svg class="faq-chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a">
+        The production widget script is under 30KB gzipped. It loads asynchronously and defers execution until the <code>&lt;bloomfire-search&gt;</code> element is connected to the DOM — so it has zero impact on Time to First Byte and minimal impact on Largest Contentful Paint. It carries no external runtime dependencies (no React, no Vue, no jQuery).
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Is the widget accessible (WCAG compliant)?
+        <svg class="faq-chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a">
+        Yes. The widget is built to WCAG 2.1 AA standards. All interactive elements are keyboard-navigable, all icons include aria-labels, focus states are visually apparent, and color contrast ratios meet AA thresholds. Screen reader support has been validated against NVDA (Windows) and VoiceOver (macOS/iOS).
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How do we get started? What's the onboarding process?
+        <svg class="faq-chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="faq-a">
+        The technical onboarding takes less than a day. Your Bloomfire Customer Success Manager will:
+        <br/><br/>
+        1. Enable the Embed feature flag on your account<br/>
+        2. Issue you a community ID and walk you through token generation<br/>
+        3. Share a private CDN URL for the script<br/>
+        4. Review your first integration in a 30-minute technical call<br/><br/>
+        From there, deployment to production is entirely in your team's hands — it is just a script tag and an HTML element.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ CTA ═══════════════════════════════════════ -->
+<div class="cta-band">
+  <h2>Ready to embed Bloomfire?</h2>
+  <p>Talk to your Customer Success Manager to enable Bloomfire Embedded for your community. The technical integration takes less than a day.</p>
+  <div class="cta-actions">
+    <a href="mailto:success@bloomfire.com" class="btn-primary">
+      Contact your CSM
+    </a>
+    <a href="#demo" class="btn-ghost">Revisit the demo →</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ FOOTER ═══════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="site-footer-logo">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+      <line x1="12" y1="2" x2="12" y2="22" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="2" y1="12" x2="22" y2="12" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="19.07" y1="4.93" x2="4.93" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+      <circle cx="12" cy="2" r="1.3" fill="#3ba8c4"/>
+    </svg>
+    Bloomfire Embedded
+  </div>
+  <div class="site-footer-note">Confidential · For internal review and customer preview use only</div>
+</footer>
+
+<!-- ═══════════════════════════════════════ WIDGET SCRIPT ═══════════════════════════════════════ -->
+<script src="bloomfire-search.js"></script>
+
+<script>
+  /* ── Demo mode switcher ── */
+  function switchDemo(mode, btn) {
+    document.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.demo-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + mode).classList.add('active');
+  }
+
+  /* ── Fire a chip query into a widget ── */
+  function fireChip(widgetId, query) {
+    const w = document.getElementById(widgetId);
+    if (!w || !w.shadowRoot) return;
+    const input = w.shadowRoot.querySelector('.search-input');
+    if (!input) return;
+    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+    nativeInputValueSetter.call(input, query);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    setTimeout(() => {
+      const btn = w.shadowRoot.querySelector('.search-btn');
+      if (btn) btn.click();
+    }, 50);
+  }
+
+  /* ── Copy install code ── */
+  function copyInstall() {
+    const code = `<!-- Step 1: Load once per page -->
+<script src="https://cdn.bloomfire.com/widget/bloomfire-search.js"><\/script>
+
+<!-- Step 2 + 3: Place element with credentials -->
+<bloomfire-search
+  mode="search"
+  community-id="YOUR_COMMUNITY_ID"
+  token="YOUR_AUTH_TOKEN"
+></bloomfire-search>
+
+<!-- Step 4 (optional): Analytics event listener -->
+<script>
+  document.querySelector('bloomfire-search')
+    .addEventListener('bloomfire-search', (e) => {
+      console.log('Query:', e.detail.query);
+      console.log('Results:', e.detail.resultCount);
+    });
+<\/script>`;
+    navigator.clipboard.writeText(code).catch(() => {});
+    const btn = document.getElementById('copy-install');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy code'; btn.classList.remove('copied'); }, 2000);
+  }
+
+  /* ── FAQ accordion ── */
+  function toggleFaq(btn) {
+    const answer = btn.nextElementSibling;
+    const isOpen = btn.classList.contains('open');
+    document.querySelectorAll('.faq-q.open').forEach(q => {
+      q.classList.remove('open');
+      q.nextElementSibling.classList.remove('open');
+    });
+    if (!isOpen) {
+      btn.classList.add('open');
+      answer.classList.add('open');
+    }
+  }
+</script>
+
+</body>
+</html>

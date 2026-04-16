@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bloomfire Search Widget — Embed</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #eef1f5; min-height: 100vh; }
+
+    /* ── Top announcement bar ── */
+    .announce-bar {
+      background: #0d1b35; border-bottom: 3px solid #3ba8c4;
+      padding: 10px 24px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .announce-left { display: flex; align-items: center; gap: 10px; }
+    .announce-logo { display: flex; align-items: center; gap: 7px; color: #fff; font-size: 13px; font-weight: 700; }
+    .announce-tag { background: #e8671e; color: #fff; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 4px; letter-spacing: 0.3px; }
+    .announce-text { color: rgba(255,255,255,0.55); font-size: 11.5px; border-left: 1px solid rgba(255,255,255,0.15); padding-left: 12px; margin-left: 4px; }
+    .announce-text strong { color: #3ba8c4; }
+    .announce-right { color: rgba(255,255,255,0.35); font-size: 11px; }
+
+    /* ── Context switcher ── */
+    .context-bar {
+      background: #fff; border-bottom: 1px solid #dde3e8;
+      padding: 0 24px; display: flex; align-items: center; gap: 0;
+    }
+    .context-label { font-size: 11px; font-weight: 700; color: #8fa3b1; text-transform: uppercase; letter-spacing: 0.6px; margin-right: 16px; white-space: nowrap; }
+    .ctx-tab {
+      padding: 12px 18px; font-size: 12px; font-weight: 600; color: #8fa3b1;
+      border: none; background: transparent; cursor: pointer; border-bottom: 3px solid transparent;
+      transition: all 0.15s; font-family: inherit; white-space: nowrap;
+    }
+    .ctx-tab.active { color: #0d1b35; border-bottom-color: #3ba8c4; }
+    .ctx-tab:hover:not(.active) { color: #1a2b3c; }
+
+    /* ── Mock app shell ── */
+    .app-shell { display: flex; height: calc(100vh - 84px); overflow: hidden; }
+
+    /* Left nav */
+    .app-nav {
+      width: 52px; background: #1a2b3c; display: flex; flex-direction: column;
+      align-items: center; padding: 12px 0; gap: 4px; flex-shrink: 0;
+      border-right: 1px solid #243447;
+    }
+    .nav-item {
+      width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 0.15s; color: rgba(255,255,255,0.4);
+    }
+    .nav-item.active { background: #3ba8c4; color: #fff; }
+    .nav-item:hover:not(.active) { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); }
+    .nav-divider { width: 28px; height: 1px; background: rgba(255,255,255,0.08); margin: 6px 0; }
+
+    /* Main area */
+    .app-main { flex: 1; display: flex; overflow: hidden; }
+
+    /* Content pane */
+    .app-content { flex: 1; overflow-y: auto; background: #f5f7f9; }
+
+    /* ── Host app: Claims Portal ── */
+    .claims-topbar {
+      background: #fff; border-bottom: 1px solid #dde3e8;
+      padding: 0 20px; display: flex; align-items: center; gap: 0; height: 44px;
+    }
+    .claims-crumb { font-size: 12px; color: #8fa3b1; display: flex; align-items: center; gap: 6px; }
+    .claims-crumb a { color: #3ba8c4; text-decoration: none; font-weight: 500; }
+    .claims-crumb a:hover { text-decoration: underline; }
+    .claims-actions { margin-left: auto; display: flex; gap: 6px; }
+    .host-btn {
+      padding: 5px 14px; border-radius: 5px; font-size: 11.5px; font-weight: 600;
+      cursor: pointer; border: 1.5px solid #dde3e8; background: #fff; color: #1a2b3c;
+      font-family: inherit; transition: all 0.15s;
+    }
+    .host-btn:hover { background: #f5f7f9; }
+    .host-btn.primary { background: #0d1b35; color: #fff; border-color: #0d1b35; }
+    .host-btn.primary:hover { background: #1a2b3c; }
+
+    .claim-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+    .claim-header-card {
+      background: #fff; border: 1px solid #dde3e8; border-radius: 8px;
+      padding: 16px 18px; display: flex; align-items: flex-start; justify-content: space-between;
+    }
+    .claim-id { font-size: 18px; font-weight: 800; color: #0d1b35; margin-bottom: 3px; }
+    .claim-meta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; }
+    .claim-meta-item { font-size: 11.5px; color: #5a6e7f; display: flex; align-items: center; gap: 5px; }
+    .claim-meta-item strong { color: #1a2b3c; font-weight: 600; }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    }
+    .status-open { background: #fef3c7; color: #92400e; }
+    .status-pending { background: #eaf6fa; color: #1a6fa8; }
+    .status-closed { background: #f0fdf4; color: #166534; }
+
+    .claim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .claim-section {
+      background: #fff; border: 1px solid #dde3e8; border-radius: 8px; overflow: hidden;
+    }
+    .claim-section-hdr {
+      background: #f5f7f9; border-bottom: 1px solid #dde3e8;
+      padding: 8px 14px; font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.6px; color: #8fa3b1;
+    }
+    .claim-section-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+    .field-row { display: flex; justify-content: space-between; align-items: flex-start; }
+    .field-label { font-size: 11px; color: #8fa3b1; font-weight: 500; }
+    .field-value { font-size: 11.5px; color: #1a2b3c; font-weight: 600; text-align: right; max-width: 60%; }
+
+    .notes-list { display: flex; flex-direction: column; gap: 8px; }
+    .note { display: flex; gap: 8px; }
+    .note-avatar {
+      width: 26px; height: 26px; border-radius: 50%; background: #3ba8c4;
+      color: #fff; font-size: 9px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .note-bubble { background: #f5f7f9; border: 1px solid #dde3e8; border-radius: 0 8px 8px 8px; padding: 7px 10px; flex: 1; }
+    .note-meta { font-size: 10px; color: #8fa3b1; margin-bottom: 3px; }
+    .note-text { font-size: 11.5px; color: #1a2b3c; line-height: 1.5; }
+
+    /* ── Host app: CRM ── */
+    .crm-topbar {
+      background: #1a6fa8; padding: 0 20px; display: flex; align-items: center; gap: 14px; height: 44px;
+    }
+    .crm-topbar-logo { color: #fff; font-size: 16px; font-weight: 800; letter-spacing: -0.5px; }
+    .crm-tabs { display: flex; gap: 0; margin-left: 8px; }
+    .crm-tab {
+      padding: 0 14px; height: 44px; display: flex; align-items: center;
+      font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7);
+      border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.15s;
+    }
+    .crm-tab.active { color: #fff; border-bottom-color: #fff; }
+    .crm-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+    .crm-opp-header {
+      background: #fff; border: 1px solid #dde3e8; border-radius: 8px; padding: 14px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .opp-name { font-size: 17px; font-weight: 800; color: #0d1b35; }
+    .opp-stage { display: flex; gap: 0; margin-top: 10px; }
+    .stage-step {
+      flex: 1; height: 5px; background: #dde3e8; margin-right: 3px; border-radius: 3px;
+    }
+    .stage-step.done { background: #1a6fa8; }
+    .stage-step.active { background: #3ba8c4; }
+    .crm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .crm-section { background: #fff; border: 1px solid #dde3e8; border-radius: 8px; overflow: hidden; }
+    .crm-section-hdr { background: #f5f7f9; border-bottom: 1px solid #dde3e8; padding: 8px 14px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #8fa3b1; }
+    .crm-section-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 7px; }
+
+    /* ── Host app: Help Center ── */
+    .help-topbar {
+      background: #fff; border-bottom: 1px solid #dde3e8;
+      padding: 0 20px; display: flex; align-items: center; gap: 16px; height: 52px;
+    }
+    .help-logo { font-size: 16px; font-weight: 800; color: #0d1b35; }
+    .help-logo span { color: #3ba8c4; }
+    .help-nav { display: flex; gap: 0; margin-left: 12px; }
+    .help-nav-item { padding: 0 14px; height: 52px; display: flex; align-items: center; font-size: 12.5px; color: #5a6e7f; font-weight: 500; cursor: pointer; border-bottom: 3px solid transparent; }
+    .help-nav-item.active { color: #0d1b35; border-bottom-color: #3ba8c4; font-weight: 600; }
+    .help-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+    .help-hero { background: linear-gradient(135deg, #0d1b35 0%, #1a3060 100%); border-radius: 10px; padding: 28px 24px; }
+    .help-hero h2 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+    .help-hero p { font-size: 13px; color: rgba(255,255,255,0.65); margin-bottom: 14px; }
+    .help-categories { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .help-cat { background: #fff; border: 1px solid #dde3e8; border-radius: 8px; padding: 14px; cursor: pointer; transition: all 0.15s; }
+    .help-cat:hover { border-color: #3ba8c4; box-shadow: 0 2px 8px rgba(59,168,196,0.12); }
+    .help-cat-icon { font-size: 20px; margin-bottom: 6px; }
+    .help-cat h4 { font-size: 12.5px; font-weight: 700; color: #0d1b35; margin-bottom: 3px; }
+    .help-cat p { font-size: 11px; color: #8fa3b1; line-height: 1.5; }
+
+    /* ── Bloomfire panel (right sidebar) ── */
+    .bf-panel {
+      width: 420px; flex-shrink: 0; background: #fff;
+      border-left: 1px solid #dde3e8; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .bf-panel-header {
+      background: #0d1b35; padding: 10px 14px;
+      display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+    }
+    .bf-panel-title { display: flex; align-items: center; gap: 7px; color: #fff; font-size: 12px; font-weight: 700; }
+    .bf-panel-badge { background: #3ba8c4; color: #fff; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 3px; letter-spacing: 0.4px; }
+    .bf-panel-actions { display: flex; gap: 5px; }
+    .bf-icon-btn { width: 24px; height: 24px; border-radius: 4px; background: rgba(255,255,255,0.1); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); transition: background 0.15s; }
+    .bf-icon-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    .bf-panel-body { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+
+    /* ── Context chip hint ── */
+    .ctx-hint {
+      background: #eaf6fa; border-bottom: 1px solid #c5e8f2;
+      padding: 7px 12px; display: flex; align-items: center; gap: 7px; flex-shrink: 0;
+    }
+    .ctx-hint-text { font-size: 11px; color: #1a6fa8; flex: 1; }
+    .ctx-hint-text strong { font-weight: 700; }
+    .ctx-chip { background: #fff; border: 1px solid #3ba8c4; border-radius: 20px; padding: 3px 9px; font-size: 10.5px; color: #3ba8c4; font-weight: 600; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+    .ctx-chip:hover { background: #3ba8c4; color: #fff; }
+
+    /* ── Tech docs section ── */
+    .docs-banner {
+      background: #0d1b35; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between;
+      margin-top: 0;
+    }
+    .docs-banner-left { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 13px; font-weight: 700; }
+    .docs-banner-right { color: rgba(255,255,255,0.4); font-size: 11px; }
+    .container { max-width: 820px; margin: 0 auto; padding: 36px 24px; }
+    .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #8fa3b1; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .section-title::after { content:''; flex:1; height:1px; background:#e0e6ea; }
+    .embed-card { background:#fff; border:1px solid #e0e6ea; border-radius:8px; overflow:hidden; margin-bottom:32px; box-shadow:0 2px 8px rgba(13,27,53,0.06); }
+    .embed-card-header { background:#f5f7f9; border-bottom:1px solid #e0e6ea; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; }
+    .embed-card-title { font-size:12px; font-weight:600; color:#1a2b3c; display:flex; align-items:center; gap:6px; }
+    .copy-btn { padding:5px 14px; background:#3ba8c4; color:#fff; border:none; border-radius:4px; font-size:11px; font-weight:600; cursor:pointer; transition:background 0.15s; font-family:inherit; }
+    .copy-btn:hover { background:#2a8fab; }
+    .copy-btn.copied { background:#4caf8a; }
+    .code-block { padding:16px; background:#0d1b35; overflow-x:auto; }
+    .code-block pre { font-family:'SF Mono','Fira Code',monospace; font-size:12px; line-height:1.75; color:#a8c7d8; white-space:pre; }
+    .tag { color:#7dd3fc; } .attr { color:#86efac; } .val { color:#fde68a; } .cm { color:#4a6880; font-style:italic; }
+    .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:32px; }
+    .step { background:#fff; border:1px solid #e0e6ea; border-radius:8px; padding:14px; }
+    .step-num { width:24px; height:24px; background:#3ba8c4; color:#fff; border-radius:50%; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; margin-bottom:8px; }
+    .step-title { font-size:12px; font-weight:700; color:#0d1b35; margin-bottom:4px; }
+    .step-desc { font-size:11px; color:#5a6e7f; line-height:1.5; }
+    .step code { background:#eaf6fa; color:#3ba8c4; padding:1px 5px; border-radius:3px; font-size:11px; font-family:monospace; }
+    .attrs-card { background:#fff; border:1px solid #e0e6ea; border-radius:8px; overflow:hidden; margin-bottom:32px; }
+    .attrs-table { width:100%; border-collapse:collapse; font-size:12px; }
+    .attrs-table th { background:#f5f7f9; padding:9px 14px; text-align:left; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#8fa3b1; border-bottom:1px solid #e0e6ea; }
+    .attrs-table td { padding:10px 14px; border-bottom:1px solid #edf1f4; color:#1a2b3c; }
+    .attrs-table tr:last-child td { border-bottom:none; }
+    .attrs-table tr:hover td { background:#f5f7f9; }
+    .attr-name { font-family:monospace; font-size:12px; color:#3ba8c4; font-weight:600; }
+    .attr-badge { display:inline-block; padding:1px 7px; border-radius:3px; font-size:10px; font-weight:600; }
+    .badge-req { background:#fef3c7; color:#92400e; }
+    .badge-opt { background:#edf1f4; color:#5a6e7f; }
+    .chips-label { font-size:10px; color:#8fa3b1; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:7px; }
+    .chips { display:flex; flex-wrap:wrap; gap:6px; }
+    .chip { padding:5px 11px; background:#fff; border:1px solid #e0e6ea; border-radius:20px; font-size:11px; color:#3ba8c4; cursor:pointer; transition:all 0.15s; font-weight:500; }
+    .chip:hover { background:#eaf6fa; border-color:#3ba8c4; }
+  </style>
+</head>
+<body>
+
+<!-- ══ Announcement bar ══ -->
+<div class="announce-bar">
+  <div class="announce-left">
+    <div class="announce-logo">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><line x1="12" y1="2" x2="12" y2="22" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><line x1="2" y1="12" x2="22" y2="12" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><line x1="19.07" y1="4.93" x2="4.93" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/></svg>
+      Bloomfire Inside
+      <span class="announce-tag">PROTOTYPE</span>
+    </div>
+    <div class="announce-text">The Bloomfire widget is <strong>embedded in the right panel</strong> of each app below. Switch contexts to see how it fits in different environments.</div>
+  </div>
+  <div class="announce-right">Mock data · Internal preview</div>
+</div>
+
+<!-- ══ Context switcher ══ -->
+<div class="context-bar">
+  <span class="context-label">Embedded in</span>
+  <button class="ctx-tab active" onclick="switchContext('claims', this)">🏢 Claims Portal</button>
+  <button class="ctx-tab" onclick="switchContext('crm', this)">📋 CRM / Salesforce</button>
+  <button class="ctx-tab" onclick="switchContext('help', this)">💬 Help Center</button>
+</div>
+
+<!-- ══ App shell ══ -->
+<div class="app-shell">
+
+  <!-- Left icon nav (generic app chrome) -->
+  <nav class="app-nav">
+    <div class="nav-item active">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.8"/></svg>
+    </div>
+    <div class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="1.8"/></svg>
+    </div>
+    <div class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/></svg>
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </div>
+    <div class="nav-item" style="margin-top:auto;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <div class="app-main">
+
+    <!-- ── CONTEXT: Claims Portal ── -->
+    <div class="app-content ctx-panel" id="ctx-claims">
+      <div class="claims-topbar">
+        <div class="claims-crumb">
+          <a href="#">Claims</a>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round"/></svg>
+          <a href="#">Homeowner</a>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round"/></svg>
+          <span style="color:#1a2b3c;font-weight:600;">CLM-2026-04817</span>
+        </div>
+        <div class="claims-actions">
+          <button class="host-btn">Reassign</button>
+          <button class="host-btn">Add Note</button>
+          <button class="host-btn primary">Update Status</button>
+        </div>
+      </div>
+      <div class="claim-body">
+        <div class="claim-header-card">
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="claim-id">CLM-2026-04817</div>
+              <span class="status-pill status-open">● Open</span>
+            </div>
+            <div style="font-size:13px;color:#5a6e7f;margin-top:2px;">Homeowner — Wind &amp; Hail Damage · Policy #HO3-8812-OH</div>
+            <div class="claim-meta">
+              <div class="claim-meta-item"><strong>Insured:</strong> Margaret Hollis</div>
+              <div class="claim-meta-item"><strong>Filed:</strong> Apr 2, 2026</div>
+              <div class="claim-meta-item"><strong>Est. Value:</strong> $18,400</div>
+              <div class="claim-meta-item"><strong>State:</strong> Ohio</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:11px;color:#8fa3b1;margin-bottom:4px;">Assigned adjuster</div>
+            <div style="font-size:13px;font-weight:700;color:#0d1b35;">James Rourke</div>
+            <div style="font-size:11px;color:#8fa3b1;">Field · Licensed OH, MI, PA</div>
+          </div>
+        </div>
+        <div class="claim-grid">
+          <div class="claim-section">
+            <div class="claim-section-hdr">Coverage Details</div>
+            <div class="claim-section-body">
+              <div class="field-row"><span class="field-label">Policy form</span><span class="field-value">HO-3 (Open Perils)</span></div>
+              <div class="field-row"><span class="field-label">Dwelling limit</span><span class="field-value">$320,000</span></div>
+              <div class="field-row"><span class="field-label">Deductible</span><span class="field-value">$2,500 (wind/hail)</span></div>
+              <div class="field-row"><span class="field-label">Contents coverage</span><span class="field-value">$96,000 ACV</span></div>
+              <div class="field-row"><span class="field-label">Loss of use</span><span class="field-value">Up to $32,000</span></div>
+            </div>
+          </div>
+          <div class="claim-section">
+            <div class="claim-section-hdr">Loss Details</div>
+            <div class="claim-section-body">
+              <div class="field-row"><span class="field-label">Loss date</span><span class="field-value">Apr 1, 2026</span></div>
+              <div class="field-row"><span class="field-label">Cause</span><span class="field-value">Wind &amp; Hail</span></div>
+              <div class="field-row"><span class="field-label">Damage areas</span><span class="field-value">Roof, siding, 2 windows</span></div>
+              <div class="field-row"><span class="field-label">Inspection</span><span class="field-value"><span class="status-pill status-pending">Scheduled Apr 10</span></span></div>
+              <div class="field-row"><span class="field-label">OH deadline</span><span class="field-value" style="color:#e8671e;font-weight:700;">May 2, 2026 (21 days)</span></div>
+            </div>
+          </div>
+          <div class="claim-section" style="grid-column:1/-1;">
+            <div class="claim-section-hdr">Activity Log</div>
+            <div class="claim-section-body">
+              <div class="notes-list">
+                <div class="note"><div class="note-avatar">JR</div><div class="note-bubble"><div class="note-meta">James Rourke · Apr 3, 2026 · 9:14 AM</div><div class="note-text">Initial contact made with insured. Scheduled field inspection for Apr 10. Requested photo documentation via claimant portal.</div></div></div>
+                <div class="note"><div class="note-avatar">SL</div><div class="note-bubble"><div class="note-meta">Sarah Liu (Intake) · Apr 2, 2026 · 4:32 PM</div><div class="note-text">Claim received and validated. Assigned to James Rourke (field) per SOP — estimated damage exceeds $5,000 threshold.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CONTEXT: CRM ── -->
+    <div class="app-content ctx-panel" id="ctx-crm" style="display:none;">
+      <div class="crm-topbar">
+        <div class="crm-topbar-logo">SalesForce</div>
+        <div class="crm-tabs">
+          <div class="crm-tab">Home</div>
+          <div class="crm-tab active">Opportunities</div>
+          <div class="crm-tab">Contacts</div>
+          <div class="crm-tab">Accounts</div>
+          <div class="crm-tab">Reports</div>
+        </div>
+      </div>
+      <div class="crm-body">
+        <div class="crm-opp-header">
+          <div>
+            <div class="opp-name">Meridian Health Group — Enterprise Renewal</div>
+            <div style="font-size:12px;color:#5a6e7f;margin-top:3px;">Account: Meridian Health Group · Owner: Dana Kellerman · Close: Jun 30, 2026</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:10px;">
+              <span style="font-size:11px;color:#8fa3b1;font-weight:600;">Stage</span>
+              <div class="opp-stage" style="width:220px;">
+                <div class="stage-step done"></div>
+                <div class="stage-step done"></div>
+                <div class="stage-step active"></div>
+                <div class="stage-step"></div>
+                <div class="stage-step"></div>
+              </div>
+              <span style="font-size:11.5px;font-weight:700;color:#1a6fa8;">Proposal Sent</span>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:22px;font-weight:800;color:#0d1b35;">$148,000</div>
+            <div style="font-size:11px;color:#8fa3b1;">Annual contract value</div>
+          </div>
+        </div>
+        <div class="crm-grid">
+          <div class="crm-section">
+            <div class="crm-section-hdr">Opportunity Details</div>
+            <div class="crm-section-body">
+              <div class="field-row"><span class="field-label">Probability</span><span class="field-value" style="color:#4caf8a;font-weight:700;">72%</span></div>
+              <div class="field-row"><span class="field-label">Next step</span><span class="field-value">Executive Business Review — Apr 15</span></div>
+              <div class="field-row"><span class="field-label">Competitor</span><span class="field-value">Guru, Confluence</span></div>
+              <div class="field-row"><span class="field-label">Use case</span><span class="field-value">Clinical knowledge mgmt + onboarding</span></div>
+            </div>
+          </div>
+          <div class="crm-section">
+            <div class="crm-section-hdr">Contact</div>
+            <div class="crm-section-body">
+              <div class="field-row"><span class="field-label">Primary</span><span class="field-value">Dr. Priya Nair, CKO</span></div>
+              <div class="field-row"><span class="field-label">Champion</span><span class="field-value">Tom Vargas, IT Director</span></div>
+              <div class="field-row"><span class="field-label">Economic buyer</span><span class="field-value">CFO (TBC)</span></div>
+              <div class="field-row"><span class="field-label">Last touched</span><span class="field-value">Apr 5, 2026</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CONTEXT: Help Center ── -->
+    <div class="app-content ctx-panel" id="ctx-help" style="display:none;">
+      <div class="help-topbar">
+        <div class="help-logo">Nationwide <span>Help</span></div>
+        <nav class="help-nav">
+          <div class="help-nav-item active">Home</div>
+          <div class="help-nav-item">My Claims</div>
+          <div class="help-nav-item">Policy</div>
+          <div class="help-nav-item">Billing</div>
+          <div class="help-nav-item">Contact Us</div>
+        </nav>
+      </div>
+      <div class="help-body">
+        <div class="help-hero">
+          <h2>Hi Margaret, how can we help you today?</h2>
+          <p>Search our knowledge base or ask Synapse AI a question about your policy, claims, or coverage.</p>
+        </div>
+        <div class="help-categories">
+          <div class="help-cat"><div class="help-cat-icon">🏠</div><h4>Claims</h4><p>File, track, and manage your claims</p></div>
+          <div class="help-cat"><div class="help-cat-icon">📄</div><h4>Policy &amp; Coverage</h4><p>Understand your coverage and policy terms</p></div>
+          <div class="help-cat"><div class="help-cat-icon">💳</div><h4>Billing</h4><p>Payments, invoices, and auto-pay settings</p></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end app-main -->
+
+  <!-- ══ Bloomfire embedded panel ══ -->
+  <div class="bf-panel">
+    <div class="bf-panel-header">
+      <div class="bf-panel-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="12" y1="2" x2="12" y2="22" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><line x1="2" y1="12" x2="22" y2="12" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><line x1="19.07" y1="4.93" x2="4.93" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/></svg>
+        Bloomfire
+        <span class="bf-panel-badge">EMBEDDED</span>
+      </div>
+      <div class="bf-panel-actions">
+        <button class="bf-icon-btn" title="Expand">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><polyline points="15,3 21,3 21,9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="9,21 3,21 3,15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="3" x2="14" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="21" x2="10" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <button class="bf-icon-btn" title="Close">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="ctx-hint" id="ctx-hint">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#1a6fa8" stroke-width="1.8"/><line x1="12" y1="8" x2="12" y2="12" stroke="#1a6fa8" stroke-width="1.8" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="#1a6fa8" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <span class="ctx-hint-text" id="ctx-hint-text">Searching <strong>Nationwide</strong> knowledge base</span>
+      <span class="ctx-chip" data-q="homeowner claim process" onclick="quickSearch(this)">Try: homeowner claim</span>
+    </div>
+    <div class="bf-panel-body">
+      <bloomfire-search id="widget" mode="search" community-id="Nationwide" token="mock-token"></bloomfire-search>
+    </div>
+  </div>
+
+</div><!-- end app-shell -->
+
+<!-- ══ Tech docs ══ -->
+<div class="docs-banner">
+  <div class="docs-banner-left">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><polyline points="16,18 22,12 16,6" stroke="#3ba8c4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="8,6 2,12 8,18" stroke="#3ba8c4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Integration Guide
+  </div>
+  <div class="docs-banner-right">3 lines of code · No build step required</div>
+</div>
+
+<div class="container">
+
+  <div class="section-title">How to embed</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-title">Add the script</div>
+      <div class="step-desc">Paste the <code>&lt;script&gt;</code> tag once in your page. No npm, no build step, no framework required.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-title">Place the element</div>
+      <div class="step-desc">Drop <code>&lt;bloomfire-search&gt;</code> anywhere in your HTML. Works in Angular, React, Vue, or plain HTML.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-title">Pass your token</div>
+      <div class="step-desc">Set <code>token</code> and <code>community-id</code>. The widget authenticates silently — no login prompt shown.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Embed code</div>
+  <div class="embed-card">
+    <div class="embed-card-header">
+      <div class="embed-card-title">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+          <polyline points="16,18 22,12 16,6" stroke="#3ba8c4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="8,6 2,12 8,18" stroke="#3ba8c4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Copy and paste into any webpage
+      </div>
+      <button class="copy-btn" id="copy-btn" onclick="copyCode()">Copy code</button>
+    </div>
+    <div class="code-block"><pre
+><span class="cm">&lt;!-- Step 1: Load widget script once per page --&gt;</span>
+<span class="tag">&lt;script </span><span class="attr">src</span><span class="tag">=</span><span class="val">"https://cdn.bloomfire.com/widget/bloomfire-search.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+
+<span class="cm">&lt;!-- Step 2: Place the element where you want it --&gt;</span>
+<span class="tag">&lt;bloomfire-search</span>
+  <span class="attr">mode</span><span class="tag">=</span><span class="val">"search"</span>
+  <span class="attr">community-id</span><span class="tag">=</span><span class="val">"YOUR_COMMUNITY_ID"</span>
+  <span class="attr">token</span><span class="tag">=</span><span class="val">"YOUR_AUTH_TOKEN"</span>
+<span class="tag">&gt;&lt;/bloomfire-search&gt;</span>
+
+<span class="cm">&lt;!-- Step 3 (optional): Listen to search events --&gt;</span>
+<span class="tag">&lt;script&gt;</span>
+  <span class="attr">document</span>.querySelector(<span class="val">'bloomfire-search'</span>)
+    .addEventListener(<span class="val">'bloomfire-search'</span>, (e) <span class="tag">=&gt;</span> {
+      <span class="attr">console</span>.log(<span class="val">'Query:'</span>, e.detail.query);
+      <span class="attr">console</span>.log(<span class="val">'Results:'</span>, e.detail.resultCount);
+    });
+<span class="tag">&lt;/script&gt;</span></pre></div>
+  </div>
+
+  <div class="section-title">Attributes</div>
+  <div class="attrs-card">
+    <table class="attrs-table">
+      <thead>
+        <tr><th>Attribute</th><th>Values</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="attr-name">mode</span></td>
+          <td><code style="background:#eaf6fa;color:#3ba8c4;padding:1px 5px;border-radius:3px;font-size:11px">"search"</code> · <code style="background:#eaf6fa;color:#3ba8c4;padding:1px 5px;border-radius:3px;font-size:11px">"synapse"</code></td>
+          <td><span class="attr-badge badge-opt">Optional</span></td>
+          <td>Default is <code style="font-size:11px;color:#3ba8c4">search</code>. <code style="font-size:11px;color:#3ba8c4">search</code> shows semantic results with relevance scores and filters. <code style="font-size:11px;color:#3ba8c4">synapse</code> enables full conversational AI. Users can switch between both modes inside the widget.</td>
+        </tr>
+        <tr>
+          <td><span class="attr-name">community-id</span></td>
+          <td>String</td>
+          <td><span class="attr-badge badge-req">Required</span></td>
+          <td>Your Bloomfire community identifier. Scopes all results to your community.</td>
+        </tr>
+        <tr>
+          <td><span class="attr-name">token</span></td>
+          <td>String</td>
+          <td><span class="attr-badge badge-req">Required</span></td>
+          <td>Auth token for the current user. Passed silently — no login prompt shown.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Try a query</div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px;">
+    <span class="chip" data-q="homeowner claim process" onclick="quickSearch(this)">Homeowner claim process</span>
+    <span class="chip" data-q="michigan auto insurance" onclick="quickSearch(this)">Michigan auto insurance</span>
+    <span class="chip" data-q="adjuster assignment" onclick="quickSearch(this)">Adjuster assignment</span>
+  </div>
+
+</div>
+
+<!-- Bloomfire Search Web Component -->
+<script>
+(function () {
+'use strict';
+
+// ─── Brand tokens ──────────────────────────────────────────────────────────────
+const BF = {
+  teal: '#3ba8c4', tealLight: '#eaf6fa', tealMid: '#c5e8f2',
+  navy: '#0d1b35', orange: '#e8671e', orangeHover: '#cf5a18',
+  white: '#ffffff', bgPage: '#f5f7f9', border: '#e0e6ea',
+  borderLight: '#edf1f4', textPrimary: '#1a2b3c',
+  textSecond: '#5a6e7f', textMeta: '#8fa3b1',
+};
+
+// ─── Mock search results ───────────────────────────────────────────────────────
+const SEARCH_RESULTS = {
+  'how do I process a homeowner claim': [
+    { title: 'Homeowner Claims Processing Guide', type: 'Series', snippet: 'Step-by-step guide covering intake, initial assessment, adjuster assignment, documentation requirements, and state-mandated resolution timelines.', author: 'Claims Team', date: 'Jan 15, 2026', id: 'hc-001' },
+    { title: 'Adjuster Assignment SOP', type: 'Post', snippet: 'SOP for assigning adjusters based on claim value. Claims above $5,000 require a licensed field adjuster within 24 hours of the initial report.', author: 'Operations', date: 'Feb 3, 2026', id: 'aa-002' },
+    { title: 'Required Documentation Checklist', type: 'Post', snippet: 'Complete list of required forms and evidence for homeowner claims, including HO-3, supplemental damage reports, contractor estimates, and photo documentation.', author: 'Compliance', date: 'Dec 10, 2025', id: 'rd-003' },
+    { title: 'State Mandated Resolution Timelines', type: 'Post', snippet: 'Ohio: 21 days, Michigan: 60 days, Pennsylvania: 30 days. Non-compliance may result in regulatory penalties.', author: 'Legal', date: 'Nov 22, 2025', id: 'st-004' },
+  ],
+  'what are the michigan auto insurance requirements': [
+    { title: 'State Requirements — Michigan Auto', type: 'Series', snippet: 'Michigan requires PIP, PPI of at least $1M, and Residual Liability Insurance. Since 2020 reform, drivers may elect their PIP level from unlimited down to opt-out.', author: 'Compliance', date: 'Mar 1, 2026', id: 'mi-001' },
+    { title: 'Michigan No-Fault Reform Summary', type: 'Post', snippet: 'Overview of the 2020 Michigan No-Fault reform: new PIP election options, mini-tort updates, and bodily injury liability minimums ($250K/$500K).', author: 'Legal', date: 'Feb 14, 2026', id: 'mi-002' },
+    { title: 'Minimum Liability Standards by State', type: 'Post', snippet: 'State-by-state breakdown of minimum auto liability requirements. Includes recent legislative changes for MI, OH, PA, and FL.', author: 'Underwriting', date: 'Jan 30, 2026', id: 'ml-003' },
+  ],
+  'adjuster assignment guidelines': [
+    { title: 'Adjuster Assignment SOP', type: 'Post', snippet: 'SOP for assigning adjusters based on claim value. Claims above $5,000 require a licensed field adjuster within 24 hours of the initial report.', author: 'Operations', date: 'Feb 3, 2026', id: 'aa-002' },
+    { title: 'Field vs. Desk Adjuster Decision Tree', type: 'Post', snippet: 'Decision framework for routing claims to field or desk adjusters. Factors include claim type, estimated value, customer tier, and geographic availability.', author: 'Claims Team', date: 'Jan 8, 2026', id: 'adj-005' },
+    { title: 'Adjuster Certification Requirements', type: 'Series', snippet: 'State-by-state certification and licensing requirements for field adjusters. Includes renewal timelines, CE credits, and reciprocity agreements.', author: 'HR & Compliance', date: 'Dec 5, 2025', id: 'adj-006' },
+  ],
+  default: [
+    { title: 'Claims Handling — Quick Reference Guide', type: 'Post', snippet: 'Concise reference covering the most common claim scenarios, escalation paths, required documentation, and SLA timelines.', author: 'Claims Team', date: 'Feb 20, 2026', id: 'gen-001' },
+    { title: 'Policy Administration Guide', type: 'Series', snippet: 'Comprehensive guide to policy lifecycle management — from issuance through renewal, endorsement, cancellation, and reinstatement.', author: 'Policy Admin', date: 'Jan 10, 2026', id: 'gen-002' },
+    { title: 'Customer Communication Standards', type: 'Post', snippet: 'Standards for written and verbal communication with policyholders during the claims process, including required disclosures and response SLAs.', author: 'Customer Experience', date: 'Dec 18, 2025', id: 'gen-003' },
+  ],
+};
+
+// ─── Mock AI answers ───────────────────────────────────────────────────────────
+const AI_ANSWERS = {
+  askAI: {
+    'how do I process a homeowner claim': 'To process a homeowner claim, verify policy details and coverage limits, document all damages with photos, and assign an adjuster within 24 hours. Ensure forms HO-3 and the supplemental damage report are completed before closing.',
+    'what are the michigan auto insurance requirements': 'Michigan requires PIP, PPI of at least $1 million, and Residual Liability Insurance. Since 2020, drivers may choose their PIP level. Minimum bodily injury liability is $250,000/$500,000.',
+    'adjuster assignment guidelines': 'Assign a licensed field adjuster within 24 hours for claims above $5,000. Desk adjusters handle claims below $5,000 remotely. Use the Field vs. Desk Decision Tree to route edge cases.',
+    default: 'Based on the available knowledge base, here is what I found. Review the source articles below for the full context and documentation.',
+  },
+  synapse: {
+    'how do I process a homeowner claim': '## Homeowner Claim Processing\n\n**1. Intake & Verification** — Confirm the policy number, coverage type (HO-3, HO-5), and loss date falls within the active policy period.\n\n**2. Initial Contact** — Reach the claimant within 4 business hours and schedule an inspection or request photo documentation based on claim severity.\n\n**3. Adjuster Assignment** — For claims above $5,000, assign a licensed field adjuster within 24 hours. Below $5,000, a desk adjuster handles remotely.\n\n**4. Documentation** — Collect the HO-3 form, photo evidence, contractor estimates, and proof of ownership for personal property items.\n\n**5. Resolution** — Issue payment or denial within the state-mandated window: Ohio 21 days, Michigan 60 days. Log all actions in Optimus.',
+    'what are the michigan auto insurance requirements': '## Michigan Auto Insurance Requirements\n\nSince the 2020 No-Fault Reform, Michigan drivers select their own PIP level at policy issuance.\n\n**Required coverages:**\n- **PIP** — chosen level from unlimited down to opt-out (with qualifying health coverage)\n- **PPI** — minimum $1,000,000 for damage you cause to others\' property\n- **Residual Liability** — minimum $250,000 / $500,000 bodily injury\n\nThe mini-tort cap allows recovery of up to $3,000 for vehicle damage when the other driver is more than 50% at fault.',
+    'adjuster assignment guidelines': '## Adjuster Assignment Guidelines\n\nUse the **Field vs. Desk Decision Tree** to route each claim:\n\n**Field adjuster required when:**\n- Estimated damages exceed $5,000\n- Structural damage is suspected\n- Insured specifically requests in-person inspection\n\n**Desk adjuster handles:**\n- Claims below $5,000 via photo documentation\n- Virtual assessments for minor auto or contents claims\n\nAll assignments must be logged in Optimus within 2 hours of claim intake.',
+    default: '## Search Results\n\nHere is a synthesized answer based on the most relevant content in your knowledge base.\n\nFor best results, try a specific question such as *"What are the steps to process an auto claim in Ohio?"* or *"What documentation is required for a fire claim?"*',
+  },
+  thinking: {
+    'how do I process a homeowner claim': "The user needs homeowner claim processing steps. I'll structure the answer around the five key phases — intake, contact, adjuster assignment, documentation, and resolution — pulling from the SOP and state timeline docs.",
+    'what are the michigan auto insurance requirements': "Michigan no-fault is complex post-2020 reform. I'll focus on the required coverages (PIP, PPI, Residual Liability), the new PIP election options, and the key minimums for bodily injury liability.",
+    'adjuster assignment guidelines': "The user wants adjuster routing criteria. Key decision point is the $5,000 threshold. I'll explain field vs. desk adjuster criteria and reference the Decision Tree.",
+    default: 'Analyzing the query against the knowledge base. Identifying the most relevant articles and structuring a comprehensive, accurate response based on your community content.',
+  },
+};
+
+// ─── Mock follow-up responses (Synapse conversation) ──────────────────────────
+const FOLLOWUP_RESPONSES = {
+  michigan: {
+    'opt out':   'If a policyholder opts out of PIP, they must have qualifying health coverage through an employer group plan. The opt-out only applies to medical benefits — PPI and Residual Liability are still required. Verify the qualifying coverage on file before processing any PIP opt-out election.',
+    'mini-tort': "Michigan's mini-tort allows recovery of up to $3,000 for vehicle damage when the other driver is more than 50% at fault. This applies even under no-fault, specifically for uninsured out-of-pocket repair costs. File the mini-tort claim separately from the PIP claim.",
+    'pip':       'PIP (Personal Injury Protection) covers the insured\'s own medical bills and lost wages regardless of fault. Under the 2020 reform, policyholders choose their PIP level: Unlimited, $500K, $250K, $50K (Medicaid eligible), or Opt-Out (with qualifying health coverage).',
+    'uninsured': 'Uninsured Motorist coverage is not required in Michigan but is strongly recommended. The mini-tort cap of $3,000 only covers vehicle damage — it does not cover medical expenses or lost wages beyond PIP.',
+    default:     "Under Michigan's 2020 reform, each policyholder's elected PIP level is listed on the declarations page in Optimus under Coverage Summary. If the election is unclear when handling a claim, pull the declarations page before assessing coverage.",
+  },
+  homeowner: {
+    'adjuster':   'If a field adjuster cannot be assigned within 24 hours for a claim over $5,000, escalate immediately to the Regional Claims Supervisor. Document the escalation in Optimus and send the insured a written notice of the revised timeline.',
+    'timeline':   'Michigan allows up to 60 days, Ohio 21 days, and Pennsylvania 30 days. For complex claims with hidden structural damage or disputed estimates, file a formal extension with written justification before the deadline.',
+    'document':   'Required documentation: completed HO-3 form, signed property access authorization, photo evidence of all damage areas, at least two independent contractor estimates, and proof of ownership for personal property items over $500.',
+    'supplement': 'Any supplemental damage found after initial assessment must be re-authorized before additional payments are issued. Reopen the claim, assign a follow-up inspection, and document the supplement separately in Optimus.',
+    default:      'For complex homeowner claims, the most important thing is documentation completeness before closure. Coordinate with the adjuster and insured before issuing partial payments. If there are disputes over estimates, engage the internal appraisal team.',
+  },
+  adjuster: {
+    'certif':   'Field adjusters need a valid state license for each jurisdiction. Most states require 15–20 CE credits annually. Michigan, Ohio, and Pennsylvania have active reciprocity agreements — check the Adjuster Certification database to confirm coverage.',
+    'field':    'A field adjuster is required when estimated damages exceed $5,000, structural damage is suspected, or the insured requests in-person inspection. Desk adjusters handle all other claims remotely via photo documentation.',
+    'workload': 'Adjuster workload is monitored in Optimus under Team → Workload View. If an adjuster has more than 40 active claims, the system will flag an overload and recommend an alternative. Always check current workload before manual assignment.',
+    'reassign': "To reassign a claim, use the Reassign function under the claim detail in Optimus. Don't manually change the field — the Reassign function preserves the full assignment history for audit purposes.",
+    default:    'Adjuster assignments are logged automatically in Optimus once confirmed. If a conflict of interest or capacity issue requires reassignment, document the reason in the claim notes before reassigning to create a clean audit trail.',
+  },
+  general: {
+    default: "Based on the knowledge base, I'd recommend reviewing the source articles linked above for full context. For policy-specific questions, check the declarations page in Optimus. For process questions, the Claims Handling Quick Reference Guide covers most common scenarios. What specific aspect can I help you dig into?",
+  },
+};
+
+// ─── Helpers ───────────────────────────────────────────────────────────────────
+function getSearchResults(query) {
+  const q = (query || '').toLowerCase().trim();
+  for (const key of Object.keys(SEARCH_RESULTS)) {
+    if (key === 'default') continue;
+    if (q.includes(key.split(' ').slice(0, 4).join(' '))) return SEARCH_RESULTS[key];
+  }
+  return SEARCH_RESULTS.default;
+}
+
+function getAIAnswer(query, mode) {
+  const q = (query || '').toLowerCase().trim();
+  const ds = AI_ANSWERS[mode];
+  for (const key of Object.keys(ds)) {
+    if (key === 'default') continue;
+    if (q.includes(key.split(' ').slice(0, 4).join(' '))) return ds[key];
+  }
+  return ds.default;
+}
+
+function getThinking(query) {
+  const q = (query || '').toLowerCase().trim();
+  const ds = AI_ANSWERS.thinking;
+  for (const key of Object.keys(ds)) {
+    if (key === 'default') continue;
+    if (q.includes(key.split(' ').slice(0, 4).join(' '))) return ds[key];
+  }
+  return ds.default;
+}
+
+function getFollowUpResponse(originalQuery, followUpQuery) {
+  const oq = (originalQuery || '').toLowerCase();
+  const fq  = (followUpQuery  || '').toLowerCase();
+  let topicMap = FOLLOWUP_RESPONSES.general;
+  if (oq.includes('michigan') || oq.includes('auto insur')) topicMap = FOLLOWUP_RESPONSES.michigan;
+  else if (oq.includes('homeowner') || oq.includes('home'))  topicMap = FOLLOWUP_RESPONSES.homeowner;
+  else if (oq.includes('adjuster'))                          topicMap = FOLLOWUP_RESPONSES.adjuster;
+  for (const key of Object.keys(topicMap)) {
+    if (key === 'default') continue;
+    if (fq.includes(key)) return topicMap[key];
+  }
+  return topicMap.default || FOLLOWUP_RESPONSES.general.default;
+}
+
+// ─── SVG icons ─────────────────────────────────────────────────────────────────
+const LOGO_SVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><line x1="12" y1="2" x2="12" y2="22" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><line x1="2" y1="12" x2="22" y2="12" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><line x1="19.07" y1="4.93" x2="4.93" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="2" r="1.3" fill="#3ba8c4"/><circle cx="12" cy="22" r="1.3" fill="#3ba8c4"/><circle cx="2" cy="12" r="1.3" fill="#3ba8c4"/><circle cx="22" cy="12" r="1.3" fill="#3ba8c4"/><circle cx="4.93" cy="4.93" r="1.3" fill="#3ba8c4"/><circle cx="19.07" cy="19.07" r="1.3" fill="#3ba8c4"/><circle cx="19.07" cy="4.93" r="1.3" fill="#3ba8c4"/><circle cx="4.93" cy="19.07" r="1.3" fill="#3ba8c4"/></svg>`;
+const iconSearch = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="white" stroke-width="2.2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg>`;
+const iconSearchGray = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#8fa3b1" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round"/></svg>`;
+const iconSend = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const iconSparkle = (c = '#3ba8c4') => `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="${c}" stroke-width="2" stroke-linecap="round"/></svg>`;
+const iconLightning = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="#3ba8c4" stroke-width="2" stroke-linejoin="round"/></svg>`;
+const iconDoc = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><polyline points="14,2 14,8 20,8" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="8" y1="13" x2="16" y2="13" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="17" x2="12" y2="17" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const iconSeries = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="#3ba8c4" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="#3ba8c4" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="#3ba8c4" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="#3ba8c4" stroke-width="1.8"/></svg>`;
+const iconExternal = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round"/><polyline points="15,3 21,3 21,9" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="10" y1="14" x2="21" y2="3" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round"/></svg>`;
+const iconChevron = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const iconUser = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#8fa3b1" stroke-width="1.8"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7" stroke="#8fa3b1" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const iconCalendar = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#8fa3b1" stroke-width="1.8"/><line x1="3" y1="9" x2="21" y2="9" stroke="#8fa3b1" stroke-width="1.8"/><line x1="8" y1="2" x2="8" y2="6" stroke="#8fa3b1" stroke-width="1.8" stroke-linecap="round"/><line x1="16" y1="2" x2="16" y2="6" stroke="#8fa3b1" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const iconPlus = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>`;
+const getTypeIcon = t => t === 'Series' ? iconSeries : iconDoc;
+
+// ─── Component CSS ─────────────────────────────────────────────────────────────
+const CSS = `
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:host{display:block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:14px;color:${BF.textPrimary};background:${BF.white};border:1px solid ${BF.border};border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(13,27,53,0.1);max-width:680px;width:100%;}
+.header{background:${BF.navy};padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid ${BF.teal};}
+.logo{display:flex;align-items:center;gap:7px;color:${BF.white};font-size:15px;font-weight:700;}
+.tabs{display:flex;gap:2px;}
+.tab{padding:5px 13px;border:none;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;color:rgba(255,255,255,0.55);background:transparent;transition:all .15s;font-family:inherit;}
+.tab.active{background:${BF.teal};color:${BF.white};}
+.tab:hover:not(.active){color:${BF.white};background:rgba(255,255,255,.1);}
+.search-wrap{padding:12px 16px;background:${BF.bgPage};border-bottom:1px solid ${BF.border};}
+.search-row{display:flex;gap:0;align-items:stretch;}
+.search-input{flex:1;padding:10px 14px;border:1.5px solid ${BF.border};border-right:none;border-radius:6px 0 0 6px;font-size:13.5px;color:${BF.textPrimary};background:${BF.white};outline:none;transition:border-color .15s,box-shadow .15s;font-family:inherit;}
+.search-input:focus{border-color:${BF.teal};box-shadow:0 0 0 3px rgba(59,168,196,.15);z-index:1;position:relative;}
+.search-input::placeholder{color:${BF.textMeta};}
+.search-btn{display:flex;align-items:center;gap:6px;padding:10px 18px;background:${BF.orange};color:${BF.white};border:none;border-radius:0 6px 6px 0;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap;font-family:inherit;}
+.search-btn:hover{background:${BF.orangeHover};}
+.synapse-pills{display:flex;gap:6px;margin-top:9px;align-items:center;}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid ${BF.border};background:${BF.white};color:${BF.textSecond};transition:all .15s;user-select:none;font-family:inherit;}
+.pill.active{border-color:${BF.teal};background:${BF.tealLight};color:${BF.teal};}
+.pill:hover:not(.active){border-color:#b0c8d4;color:${BF.textPrimary};}
+.results{min-height:140px;background:${BF.white};overflow-y:auto;max-height:520px;}
+.results.conv-mode{display:flex;flex-direction:column;overflow:hidden;}
+.conv-thread{overflow-y:auto;padding:14px 16px 8px;display:flex;flex-direction:column;gap:0;scroll-behavior:smooth;min-height:180px;max-height:360px;}
+.conv-thread::-webkit-scrollbar{width:4px;}
+.conv-thread::-webkit-scrollbar-track{background:transparent;}
+.conv-thread::-webkit-scrollbar-thumb{background:${BF.tealMid};border-radius:4px;}
+.conv-user-wrap{display:flex;justify-content:flex-end;margin-bottom:12px;}
+.conv-user-bubble{background:#e8f2f7;border:1px solid ${BF.tealMid};border-radius:14px 14px 4px 14px;padding:9px 13px;max-width:84%;font-size:13px;color:${BF.textPrimary};line-height:1.55;}
+.conv-synapse-wrap{margin-bottom:16px;}
+.conv-synapse-label{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:${BF.teal};text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
+.conv-synapse-body{background:${BF.tealLight};border-left:3px solid ${BF.teal};border-radius:0 6px 6px 0;padding:11px 14px;font-size:13px;line-height:1.7;color:${BF.textPrimary};}
+.conv-synapse-body h2{font-size:13.5px;font-weight:700;color:${BF.navy};margin:0 0 8px;}
+.conv-synapse-body p{margin-bottom:7px;}
+.conv-synapse-body p:last-child{margin-bottom:0;}
+.conv-synapse-body strong{font-weight:600;color:${BF.navy};}
+.conv-synapse-body em{color:${BF.teal};font-style:italic;}
+.conv-sources{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.conv-source-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;background:${BF.white};border:1px solid ${BF.border};border-radius:20px;font-size:11px;color:${BF.textSecond};cursor:pointer;text-decoration:none;transition:all .15s;}
+.conv-source-pill:hover{border-color:${BF.teal};color:${BF.teal};}
+.conv-thinking{margin-bottom:6px;border:1px solid ${BF.border};border-radius:6px;overflow:hidden;}
+.conv-thinking-toggle{width:100%;display:flex;align-items:center;gap:6px;padding:6px 12px;background:${BF.bgPage};border:none;font-size:11px;font-weight:600;color:${BF.textSecond};cursor:pointer;text-align:left;font-family:inherit;transition:background .15s;}
+.conv-thinking-toggle:hover{background:${BF.tealLight};}
+.conv-thinking-toggle .chev{margin-left:auto;transition:transform .2s;}
+.conv-thinking-toggle.open .chev{transform:rotate(180deg);}
+.conv-thinking-body{display:none;padding:9px 12px;font-size:11.5px;line-height:1.6;color:${BF.textSecond};border-top:1px solid ${BF.borderLight};font-style:italic;}
+.conv-thinking-body.visible{display:block;}
+.conv-typing{display:flex;align-items:center;gap:5px;padding:4px 0 10px;}
+.conv-typing-label{font-size:11px;color:${BF.textMeta};margin-right:2px;}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:${BF.tealMid};animation:bounce 1.2s infinite;}
+.typing-dot:nth-child(3){animation-delay:.2s;}
+.typing-dot:nth-child(4){animation-delay:.4s;}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+.conv-turn-divider{height:1px;background:${BF.borderLight};margin:4px 0 14px;}
+.conv-header-bar{padding:8px 14px;background:${BF.bgPage};border-bottom:1px solid ${BF.border};display:flex;align-items:center;gap:10px;}
+.conv-header-query{flex:1;font-size:12px;color:${BF.textSecond};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.conv-header-query strong{color:${BF.textPrimary};font-weight:600;}
+.conv-new-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:${BF.teal};cursor:pointer;background:none;border:1px solid ${BF.tealMid};border-radius:4px;padding:3px 10px;font-family:inherit;font-weight:600;transition:all .15s;white-space:nowrap;flex-shrink:0;}
+.conv-new-btn:hover{background:${BF.tealLight};}
+.followup-bar{padding:10px 14px;background:${BF.bgPage};border-top:1px solid ${BF.border};display:flex;gap:0;align-items:stretch;}
+.followup-input{flex:1;padding:9px 14px;border:1.5px solid ${BF.border};border-right:none;border-radius:20px 0 0 20px;font-size:13px;color:${BF.textPrimary};background:${BF.white};outline:none;font-family:inherit;transition:border-color .15s;}
+.followup-input:focus{border-color:${BF.teal};}
+.followup-input::placeholder{color:${BF.textMeta};}
+.followup-input:disabled{background:${BF.bgPage};}
+.followup-send{padding:9px 16px;background:${BF.orange};color:${BF.white};border:none;border-radius:0 20px 20px 0;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:5px;transition:background .15s;font-family:inherit;white-space:nowrap;}
+.followup-send:hover:not(:disabled){background:${BF.orangeHover};}
+.followup-send:disabled{opacity:.45;cursor:default;}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:40px 16px;text-align:center;color:${BF.textMeta};}
+.empty-icon{width:46px;height:46px;background:${BF.tealLight};border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.empty p{font-size:13px;line-height:1.5;max-width:260px;}
+.empty-hint{font-size:11px;color:#b0c8d4;}
+.skel-wrap{display:flex;flex-direction:column;gap:0;}
+.skel-card{padding:14px 16px;border-bottom:1px solid ${BF.borderLight};display:flex;flex-direction:column;gap:7px;}
+.skel{height:11px;border-radius:4px;background:linear-gradient(90deg,#edf1f4 25%,#dde5ea 50%,#edf1f4 75%);background-size:200% 100%;animation:shimmer 1.3s infinite;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.ai-block{border-left:3px solid ${BF.teal};background:${BF.tealLight};margin:14px 16px 0;border-radius:0 6px 6px 0;padding:12px 14px;}
+.ai-label{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:${BF.teal};margin-bottom:7px;}
+.ai-text{font-size:13px;line-height:1.7;color:${BF.textPrimary};}
+.synapse-answer h2{font-size:13.5px;font-weight:700;color:${BF.navy};margin:0 0 8px;}
+.synapse-answer p{font-size:13px;line-height:1.7;color:${BF.textPrimary};margin-bottom:8px;}
+.synapse-answer strong{font-weight:600;color:${BF.navy};}
+.synapse-answer em{color:${BF.teal};font-style:italic;}
+.thinking-block{margin:10px 16px 0;border:1px solid ${BF.border};border-radius:6px;overflow:hidden;}
+.thinking-toggle{width:100%;display:flex;align-items:center;gap:6px;padding:7px 12px;background:${BF.bgPage};border:none;font-size:12px;font-weight:600;color:${BF.textSecond};cursor:pointer;text-align:left;font-family:inherit;transition:background .15s;}
+.thinking-toggle:hover{background:${BF.tealLight};}
+.thinking-toggle .chev{margin-left:auto;transition:transform .2s;}
+.thinking-toggle.open .chev{transform:rotate(180deg);}
+.thinking-body{display:none;padding:10px 12px;font-size:12px;line-height:1.6;color:${BF.textSecond};border-top:1px solid ${BF.borderLight};font-style:italic;}
+.thinking-body.visible{display:block;}
+.results-section{padding:12px 16px 4px;}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.results-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:${BF.textMeta};display:flex;align-items:center;gap:6px;}
+.results-count{font-size:11px;color:${BF.textMeta};}
+.result-card{display:flex;gap:12px;align-items:flex-start;padding:11px 12px;border:1px solid ${BF.border};border-radius:7px;margin-bottom:7px;background:${BF.white};text-decoration:none;transition:all .15s;cursor:pointer;}
+.result-card:hover{border-color:${BF.tealMid};background:${BF.tealLight};box-shadow:0 2px 8px rgba(59,168,196,.1);transform:translateY(-1px);}
+.result-icon{width:36px;height:36px;flex-shrink:0;background:${BF.tealLight};border-radius:7px;display:flex;align-items:center;justify-content:center;border:1px solid ${BF.tealMid};margin-top:1px;}
+.result-body{flex:1;min-width:0;}
+.result-top{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
+.result-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:2px 7px;border-radius:3px;flex-shrink:0;}
+.type-post{background:#e8f4fd;color:#1a6fa8;}
+.type-series{background:#f0edfb;color:#6941c6;}
+.type-qa{background:#fef3e2;color:#b45309;}
+.result-title{font-size:13px;font-weight:600;color:${BF.teal};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;}
+.result-card:hover .result-title{color:#2a8fab;}
+.result-snippet{font-size:12px;color:${BF.textSecond};line-height:1.55;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.result-meta{display:flex;align-items:center;gap:12px;font-size:11px;color:${BF.textMeta};}
+.result-meta-item{display:flex;align-items:center;gap:4px;}
+.result-ext{flex-shrink:0;opacity:.4;margin-left:auto;align-self:center;}
+.footer{padding:7px 16px;border-top:1px solid ${BF.borderLight};background:${BF.bgPage};display:flex;align-items:center;justify-content:space-between;}
+.footer-brand{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:${BF.textMeta};}
+.footer-right{display:flex;align-items:center;gap:5px;font-size:10px;color:${BF.textMeta};}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#4caf8a;}
+`;
+
+// ─── Web Component ─────────────────────────────────────────────────────────────
+class BloomfireSearch extends HTMLElement {
+  static get observedAttributes() { return ['mode', 'community-id', 'token']; }
+
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this._mode         = 'ask-ai';
+    this._loading      = false;
+    this._results      = null;
+    this._aiAnswer     = null;
+    this._thinking     = null;
+    this._showThinking = false;
+    this._thinkingOpen = false;
+    this._lastQuery    = '';
+    this._conversation = [];
+  }
+
+  connectedCallback() {
+    this._mode = this.getAttribute('mode') || 'ask-ai';
+    this.render();
+    this._bind();
+  }
+
+  attributeChangedCallback(name, oldVal, newVal) {
+    if (oldVal === newVal) return;
+    if (name === 'mode') {
+      this._mode = newVal;
+      this._results = null; this._aiAnswer = null;
+      this._loading = false; this._conversation = [];
+      this.render(); this._bind();
+    }
+  }
+
+  // Public API for external chip/button integration
+  search(query) { this._search(query); }
+
+  render() {
+    const isSynapse  = this._mode === 'synapse';
+    const isConvMode = isSynapse && this._conversation.length > 0;
+    const community  = this.getAttribute('community-id') || 'Community';
+    const placeholder = isSynapse ? 'Ask Synapse a question...' : 'Search the knowledge base...';
+
+    let bodyHtml;
+    if (isConvMode) {
+      bodyHtml = this._renderSynapseConversation();
+    } else {
+      bodyHtml = `
+        <div class="search-wrap">
+          <div class="search-row">
+            <input class="search-input" id="q" type="text"
+              placeholder="${placeholder}" autocomplete="off"/>
+            <button class="search-btn" id="btn">${iconSearch} Search</button>
+          </div>
+          ${isSynapse ? `
+          <div class="synapse-pills">
+            <div class="pill ${this._showThinking ? 'active' : ''}" id="tp">
+              ${iconSparkle(this._showThinking ? BF.teal : BF.textMeta)} Thinking mode
+            </div>
+            <div class="pill active">${iconLightning} Instant mode</div>
+          </div>` : ''}
+        </div>
+        <div class="results" id="res">
+          ${this._loading
+            ? this._renderLoading()
+            : (this._results || this._aiAnswer)
+              ? this._renderResults()
+              : this._renderEmpty()}
+        </div>
+      `;
+    }
+
+    this.shadowRoot.innerHTML = `
+      <style>${CSS}</style>
+      <div class="header">
+        <div class="logo">${LOGO_SVG} Bloomfire</div>
+        <div class="tabs">
+          <button class="tab ${!isSynapse ? 'active' : ''}" data-mode="ask-ai">Ask AI</button>
+          <button class="tab ${isSynapse ? 'active' : ''}" data-mode="synapse">Synapse</button>
+        </div>
+      </div>
+      ${bodyHtml}
+      <div class="footer">
+        <div class="footer-brand">
+          ${LOGO_SVG.replace('width="20" height="20"', 'width="13" height="13"')}
+          Powered by Bloomfire
+        </div>
+        <div class="footer-right">
+          <span class="status-dot"></span>${community}
+        </div>
+      </div>
+    `;
+  }
+
+  _renderSynapseConversation() {
+    const firstUserMsg = this._conversation.find(m => m.role === 'user')?.text || '';
+    let threadHtml = '';
+
+    this._conversation.forEach((msg, idx) => {
+      if (msg.role === 'user') {
+        threadHtml += `
+          <div class="conv-user-wrap">
+            <div class="conv-user-bubble">${msg.text}</div>
+          </div>`;
+      } else {
+        const answerHtml = (msg.text || '')
+          .replace(/^## (.+)$/m, '<h2>$1</h2>')
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.+?)\*/g, '<em>$1</em>')
+          .split('\n\n').map(p => p.startsWith('<') ? p : `<p>${p}</p>`).join('');
+
+        let thinkingHtml = '';
+        if (idx === 1 && this._showThinking && msg.thinking) {
+          thinkingHtml = `
+            <div class="conv-thinking">
+              <button class="conv-thinking-toggle ${this._thinkingOpen ? 'open' : ''}" id="te">
+                ${iconSparkle(BF.textSecond)} Thinking process
+                <span class="chev">${iconChevron}</span>
+              </button>
+              <div class="conv-thinking-body ${this._thinkingOpen ? 'visible' : ''}" id="tb">
+                ${msg.thinking}
+              </div>
+            </div>`;
+        }
+
+        const sources = msg.results || [];
+        const sourcePills = sources.slice(0, 3).map(r =>
+          `<a class="conv-source-pill" href="https://app.bloomfire.com/posts/${r.id}" target="_blank">
+            ${getTypeIcon(r.type).replace(/width="15" height="15"/g, 'width="11" height="11"')}
+            ${r.title}
+          </a>`
+        ).join('');
+
+        threadHtml += `
+          <div class="conv-synapse-wrap">
+            ${thinkingHtml}
+            <div class="conv-synapse-label">${iconLightning} Synapse</div>
+            <div class="conv-synapse-body">${answerHtml}</div>
+            ${sourcePills ? `<div class="conv-sources">${sourcePills}</div>` : ''}
+          </div>`;
+
+        if (idx < this._conversation.length - 1) {
+          threadHtml += `<div class="conv-turn-divider"></div>`;
+        }
+      }
+    });
+
+    if (this._loading) {
+      threadHtml += `
+        <div class="conv-typing">
+          <span class="conv-typing-label">Synapse is thinking</span>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>`;
+    }
+
+    const dis = this._loading ? 'disabled' : '';
+    return `
+      <div class="conv-header-bar">
+        <span class="conv-header-query">
+          <strong>Synapse</strong> &nbsp;·&nbsp; ${firstUserMsg}
+        </span>
+        <button class="conv-new-btn" id="conv-new">${iconPlus} New conversation</button>
+      </div>
+      <div class="results conv-mode">
+        <div class="conv-thread" id="conv-thread">${threadHtml}</div>
+        <div class="followup-bar">
+          <input class="followup-input" id="fq" type="text"
+            placeholder="${this._loading ? 'Synapse is responding…' : 'Ask a follow-up question…'}"
+            autocomplete="off" ${dis}/>
+          <button class="followup-send" id="fs" ${dis}>${iconSend} Send</button>
+        </div>
+      </div>
+    `;
+  }
+
+  _renderEmpty() {
+    return `<div class="empty">
+      <div class="empty-icon">${LOGO_SVG}</div>
+      <p>Search your Bloomfire knowledge base or ask an AI-powered question using the tabs above.</p>
+      <span class="empty-hint">Results are sourced from your community content only</span>
+    </div>`;
+  }
+
+  _renderLoading() {
+    return `<div class="skel-wrap">${[1,2,3].map(() => `
+      <div class="skel-card">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div class="skel" style="width:36px;height:36px;border-radius:7px;flex-shrink:0"></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;gap:7px">
+              <div class="skel" style="width:48px;height:18px;border-radius:3px"></div>
+              <div class="skel" style="width:55%;height:18px"></div>
+            </div>
+            <div class="skel" style="width:95%"></div>
+            <div class="skel" style="width:80%"></div>
+            <div class="skel" style="width:40%;height:10px"></div>
+          </div>
+        </div>
+      </div>`).join('')}</div>`;
+  }
+
+  _renderResults() {
+    const isSynapse = this._mode === 'synapse';
+    let html = '';
+
+    if (this._aiAnswer) {
+      if (isSynapse && this._showThinking && this._thinking) {
+        html += `
+          <div class="thinking-block">
+            <button class="thinking-toggle ${this._thinkingOpen ? 'open' : ''}" id="te">
+              ${iconSparkle(BF.textSecond)} Thinking process
+              <span class="chev">${iconChevron}</span>
+            </button>
+            <div class="thinking-body ${this._thinkingOpen ? 'visible' : ''}" id="tb">
+              ${this._thinking}
+            </div>
+          </div>`;
+      }
+      let answerHtml = this._aiAnswer;
+      if (isSynapse) {
+        answerHtml = answerHtml
+          .replace(/^## (.+)$/m, '<h2>$1</h2>')
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.+?)\*/g, '<em>$1</em>')
+          .split('\n\n').map(p => p.startsWith('<') ? p : `<p>${p}</p>`).join('');
+      }
+      html += `
+        <div class="ai-block">
+          <div class="ai-label">
+            ${isSynapse ? iconLightning : iconSparkle()} ${isSynapse ? 'Synapse Response' : 'AI Answer'}
+          </div>
+          <div class="ai-text ${isSynapse ? 'synapse-answer' : ''}">${answerHtml}</div>
+        </div>`;
+    }
+
+    if (this._results && this._results.length) {
+      const typeClass = { Series: 'type-series', Post: 'type-post', 'Q&A': 'type-qa' };
+      html += `
+        <div class="results-section">
+          <div class="results-header">
+            <div class="results-label">${iconSearchGray} Search Results</div>
+            <span class="results-count">${this._results.length} articles found</span>
+          </div>
+          ${this._results.map(r => `
+            <a class="result-card" href="https://app.bloomfire.com/posts/${r.id}" target="_blank">
+              <div class="result-icon">${getTypeIcon(r.type)}</div>
+              <div class="result-body">
+                <div class="result-top">
+                  <span class="result-type ${typeClass[r.type] || 'type-post'}">${r.type}</span>
+                  <span class="result-title">${r.title}</span>
+                </div>
+                <div class="result-snippet">${r.snippet}</div>
+                <div class="result-meta">
+                  <span class="result-meta-item">${iconUser} ${r.author}</span>
+                  <span class="result-meta-item">${iconCalendar} ${r.date}</span>
+                </div>
+              </div>
+              <div class="result-ext">${iconExternal}</div>
+            </a>`).join('')}
+        </div>`;
+    }
+
+    return html || this._renderEmpty();
+  }
+
+  _bind() {
+    const sr = this.shadowRoot;
+
+    sr.querySelectorAll('.tab').forEach(t =>
+      t.addEventListener('click', () => {
+        this._results = null; this._aiAnswer = null;
+        this._loading = false; this._conversation = [];
+        this.setAttribute('mode', t.dataset.mode);
+      })
+    );
+
+    const btn = sr.getElementById('btn');
+    const inp = sr.getElementById('q');
+    if (btn && inp) {
+      btn.addEventListener('click', () => this._search(inp.value));
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') this._search(inp.value); });
+    }
+
+    const tp = sr.getElementById('tp');
+    if (tp) {
+      tp.addEventListener('click', () => {
+        this._showThinking = !this._showThinking;
+        const q = this._lastQuery;
+        this.render(); this._bind();
+        const i = this.shadowRoot.getElementById('q');
+        if (i && q) i.value = q;
+      });
+    }
+
+    const te = sr.getElementById('te');
+    if (te) {
+      te.addEventListener('click', () => {
+        this._thinkingOpen = !this._thinkingOpen;
+        te.classList.toggle('open', this._thinkingOpen);
+        sr.getElementById('tb')?.classList.toggle('visible', this._thinkingOpen);
+      });
+    }
+
+    const convNew = sr.getElementById('conv-new');
+    if (convNew) {
+      convNew.addEventListener('click', () => {
+        this._conversation = [];
+        this._results = null; this._aiAnswer = null;
+        this._loading = false; this._lastQuery = '';
+        this.render(); this._bind();
+      });
+    }
+
+    const fq = sr.getElementById('fq');
+    const fs = sr.getElementById('fs');
+    if (fq && fs) {
+      fs.addEventListener('click', () => { if (!this._loading) this._followUp(fq.value); });
+      fq.addEventListener('keydown', e => { if (e.key === 'Enter' && !this._loading) this._followUp(fq.value); });
+    }
+
+    const thread = sr.getElementById('conv-thread');
+    if (thread) {
+      requestAnimationFrame(() => { thread.scrollTop = thread.scrollHeight; });
+    }
+  }
+
+  _search(query) {
+    if (!query?.trim()) return;
+    this._lastQuery = query.trim();
+    this._loading = true;
+    this._thinkingOpen = false;
+
+    if (this._mode === 'synapse') {
+      this._conversation = [{ role: 'user', text: query.trim() }];
+      this._results = null; this._aiAnswer = null;
+      this.render(); this._bind();
+    } else {
+      this._results = null; this._aiAnswer = null;
+      this.render(); this._bind();
+      const i = this.shadowRoot.getElementById('q');
+      if (i) i.value = query;
+    }
+
+    setTimeout(() => {
+      const results  = getSearchResults(query);
+      const aiAnswer = getAIAnswer(query, this._mode === 'synapse' ? 'synapse' : 'askAI');
+      const thinking = getThinking(query);
+      this._loading = false;
+
+      if (this._mode === 'synapse') {
+        this._results = results;
+        this._conversation.push({ role: 'synapse', text: aiAnswer, results: results.slice(0, 3), thinking });
+        this.render(); this._bind();
+      } else {
+        this._results = results; this._aiAnswer = aiAnswer; this._thinking = thinking;
+        this.render(); this._bind();
+        const inp = this.shadowRoot.getElementById('q');
+        if (inp) inp.value = query;
+      }
+
+      this.dispatchEvent(new CustomEvent('bloomfire-search', {
+        bubbles: true, composed: true,
+        detail: { query, mode: this._mode, resultCount: results.length }
+      }));
+    }, this._mode === 'synapse' ? 2000 : 1300);
+  }
+
+  _followUp(query) {
+    if (!query?.trim() || this._loading) return;
+    this._conversation.push({ role: 'user', text: query.trim() });
+    this._loading = true;
+    this.render(); this._bind();
+
+    setTimeout(() => {
+      const responseText = getFollowUpResponse(this._lastQuery, query);
+      const sources = this._results || getSearchResults(this._lastQuery);
+      this._conversation.push({ role: 'synapse', text: responseText, results: sources.slice(0, 3) });
+      this._loading = false;
+      this.render(); this._bind();
+
+      this.dispatchEvent(new CustomEvent('bloomfire-search', {
+        bubbles: true, composed: true,
+        detail: { query, mode: this._mode, resultCount: sources.length }
+      }));
+    }, 1400);
+  }
+}
+
+customElements.define('bloomfire-search', BloomfireSearch);
+
+})();
+</script>
+
+<script src="bloomfire-search.js"></script>
+<script>
+  // Fire a query into the embedded widget
+  function quickSearch(el) {
+    const w = document.getElementById('widget');
+    if (w && w._search) w._search(el.dataset.q);
+  }
+
+  // Context switcher
+  const ctxHints = {
+    claims: { text: 'Searching <strong>Nationwide</strong> knowledge base', chip: 'Try: homeowner claim', query: 'homeowner claim process' },
+    crm:    { text: 'Searching <strong>Bloomfire Sales</strong> enablement content', chip: 'Try: competitive intel', query: 'adjuster assignment' },
+    help:   { text: 'Searching <strong>Nationwide Help</strong> content for customers', chip: 'Try: file a claim', query: 'homeowner claim process' },
+  };
+
+  function switchContext(ctx, btn) {
+    document.querySelectorAll('.ctx-panel').forEach(p => p.style.display = 'none');
+    document.getElementById('ctx-' + ctx).style.display = '';
+    document.querySelectorAll('.ctx-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const hint = ctxHints[ctx];
+    document.getElementById('ctx-hint-text').innerHTML = hint.text;
+    const chip = document.querySelector('#ctx-hint .ctx-chip');
+    chip.textContent = hint.chip;
+    chip.dataset.q = hint.query;
+    // Reset widget
+    const w = document.getElementById('widget');
+    if (w) {
+      w._searchResults = null; w._searchFilter = 'all';
+      w._results = null; w._aiAnswer = null;
+      w._loading = false; w._conversation = [];
+      w._lastQuery = ''; w.render(); w._bind();
+    }
+  }
+
+  // Copy code button
+  function copyCode() {
+    const code = `<!-- Step 1: Load widget script once per page -->
+<script src="https://cdn.bloomfire.com/widget/bloomfire-search.js"><\/script>
+
+<!-- Step 2: Place the element where you want it -->
+<bloomfire-search
+  mode="search"
+  community-id="YOUR_COMMUNITY_ID"
+  token="YOUR_AUTH_TOKEN"
+><\/bloomfire-search>
+
+<!-- Step 3 (optional): Listen to events -->
+<script>
+  document.querySelector('bloomfire-search')
+    .addEventListener('bloomfire-search', (e) => {
+      console.log('Query:', e.detail.query);
+      console.log('Mode:', e.detail.mode);
+      console.log('Results:', e.detail.resultCount);
+    });
+<\/script>`;
+    navigator.clipboard.writeText(code).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy code'; btn.classList.remove('copied'); }, 2500);
+    });
+  }
+</script>
+</body>
+</html>
