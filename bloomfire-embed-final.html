@@ -685,12 +685,16 @@ function _hexToRgb(h) {
 function _lighten(hex, a) {
   return '#' + _hexToRgb(hex).map(v => Math.round(v+(255-v)*a).toString(16).padStart(2,'0')).join('');
 }
+function _darken(hex, a) {
+  return '#' + _hexToRgb(hex).map(v => Math.round(v * (1 - a)).toString(16).padStart(2, '0')).join('');
+}
 function getCSS() {
   const c = (window._bfBrand && window._bfBrand.color) || BF.teal;
   if (c === BF.teal) return CSS;
   return CSS
     .split(BF.tealMid).join(_lighten(c, 0.65))
     .split(BF.tealLight).join(_lighten(c, 0.85))
+    .split('#2a8fab').join(_darken(c, 0.12))
     .split(BF.teal).join(c);
 }
 
@@ -819,7 +823,7 @@ const iconSearch = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none">
 const iconSearchGray = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#8fa3b1" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round"/></svg>`;
 const iconSend = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const iconSparkle = (c = '#3ba8c4') => `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="${c}" stroke-width="2" stroke-linecap="round"/></svg>`;
-const iconLightning = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="#3ba8c4" stroke-width="2" stroke-linejoin="round"/></svg>`;
+const iconLightning = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`;
 const iconDoc = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><polyline points="14,2 14,8 20,8" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="8" y1="13" x2="16" y2="13" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="17" x2="12" y2="17" stroke="#3ba8c4" stroke-width="1.8" stroke-linecap="round"/></svg>`;
 const iconSeries = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="#3ba8c4" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="#3ba8c4" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="#3ba8c4" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="#3ba8c4" stroke-width="1.8"/></svg>`;
 const iconExternal = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round"/><polyline points="15,3 21,3 21,9" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="10" y1="14" x2="21" y2="3" stroke="#8fa3b1" stroke-width="2" stroke-linecap="round"/></svg>`;
@@ -844,9 +848,13 @@ const CSS = `
 .search-input{flex:1;padding:10px 14px;border:1.5px solid ${BF.border};border-right:none;border-radius:6px 0 0 6px;font-size:13.5px;color:${BF.textPrimary};background:${BF.white};outline:none;transition:border-color .15s,box-shadow .15s;font-family:inherit;}
 .search-input:focus{border-color:${BF.teal};box-shadow:0 0 0 3px rgba(59,168,196,.15);z-index:1;position:relative;}
 .search-input::placeholder{color:${BF.textMeta};}
-.search-btn{display:flex;align-items:center;gap:6px;padding:10px 18px;background:${BF.orange};color:${BF.white};border:none;border-radius:0 6px 6px 0;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap;font-family:inherit;}
-.search-btn:hover{background:${BF.orangeHover};}
+.search-btn{display:flex;align-items:center;gap:6px;padding:10px 18px;background:${BF.teal};color:${BF.white};border:none;border-radius:0 6px 6px 0;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap;font-family:inherit;}
+.search-btn:hover{background:#2a8fab;}
 .synapse-pills{display:flex;gap:6px;margin-top:9px;align-items:center;}
+.pill-toggle{display:inline-flex;background:${BF.bgPage};border:1.5px solid ${BF.border};border-radius:20px;padding:2px;gap:0;}
+.pill-toggle .pill{border:none;border-radius:16px;padding:4px 10px;font-size:11px;}
+.pill-toggle .pill.active{background:${BF.teal};color:${BF.white};border-color:${BF.teal};}
+.pill-toggle .pill:not(.active){color:${BF.textSecond};background:transparent;}
 .pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid ${BF.border};background:${BF.white};color:${BF.textSecond};transition:all .15s;user-select:none;font-family:inherit;}
 .pill.active{border-color:${BF.teal};background:${BF.tealLight};color:${BF.teal};}
 .pill:hover:not(.active){border-color:#b0c8d4;color:${BF.textPrimary};}
@@ -893,8 +901,8 @@ const CSS = `
 .followup-input:focus{border-color:${BF.teal};}
 .followup-input::placeholder{color:${BF.textMeta};}
 .followup-input:disabled{background:${BF.bgPage};}
-.followup-send{padding:9px 16px;background:${BF.orange};color:${BF.white};border:none;border-radius:0 20px 20px 0;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:5px;transition:background .15s;font-family:inherit;white-space:nowrap;}
-.followup-send:hover:not(:disabled){background:${BF.orangeHover};}
+.followup-send{padding:9px 16px;background:${BF.teal};color:${BF.white};border:none;border-radius:0 20px 20px 0;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:5px;transition:background .15s;font-family:inherit;white-space:nowrap;}
+.followup-send:hover:not(:disabled){background:#2a8fab;}
 .followup-send:disabled{opacity:.45;cursor:default;}
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:40px 16px;text-align:center;color:${BF.textMeta};}
 .empty-icon{width:46px;height:46px;background:${BF.tealLight};border-radius:50%;display:flex;align-items:center;justify-content:center;}
@@ -962,7 +970,7 @@ class BloomfireSearch extends HTMLElement {
   }
 
   connectedCallback() {
-    this._mode = 'synapse';
+    this._mode = this.getAttribute('mode') || 'synapse';
     this.render();
     this._bind();
   }
@@ -995,14 +1003,18 @@ class BloomfireSearch extends HTMLElement {
           <div class="search-row">
             <input class="search-input" id="q" type="text"
               placeholder="${placeholder}" autocomplete="off"/>
-            <button class="search-btn" id="btn">${iconSend} Ask</button>
+            <button class="search-btn" id="btn">${isSynapse ? `${iconSend} Ask` : `${iconSearch} Search`}</button>
           </div>
           ${isSynapse ? `
           <div class="synapse-pills">
-            <div class="pill ${this._showThinking ? 'active' : ''}" id="tp">
-              ${iconSparkle(this._showThinking ? BF.teal : BF.textMeta)} Thinking mode
+            <div class="pill-toggle">
+              <div class="pill ${!this._showThinking ? 'active' : ''}" id="ip">
+                ${iconLightning} Instant
+              </div>
+              <div class="pill ${this._showThinking ? 'active' : ''}" id="tp">
+                ${iconSparkle(this._showThinking ? BF.white : BF.textMeta)} Thinking
+              </div>
             </div>
-            <div class="pill active">${iconLightning} Instant mode</div>
           </div>` : ''}
         </div>
         <div class="results" id="res">
@@ -1024,7 +1036,8 @@ class BloomfireSearch extends HTMLElement {
       <div class="header">
         <div class="logo">${_logoHtml}</div>
         <div class="tabs">
-          <button class="tab active" data-mode="synapse">Synapse</button>
+          <button class="tab ${!isSynapse ? 'active' : ''}" data-mode="search">Search</button>
+          <button class="tab ${isSynapse ? 'active' : ''}" data-mode="synapse">Synapse</button>
         </div>
       </div>
       ${bodyHtml}
@@ -1231,16 +1244,18 @@ class BloomfireSearch extends HTMLElement {
       inp.addEventListener('keydown', e => { if (e.key === 'Enter') this._search(inp.value); });
     }
 
+    const _toggleMode = (thinking) => {
+      if (this._showThinking === thinking) return;
+      this._showThinking = thinking;
+      const q = this._lastQuery;
+      this.render(); this._bind();
+      const i = this.shadowRoot.getElementById('q');
+      if (i && q) i.value = q;
+    };
     const tp = sr.getElementById('tp');
-    if (tp) {
-      tp.addEventListener('click', () => {
-        this._showThinking = !this._showThinking;
-        const q = this._lastQuery;
-        this.render(); this._bind();
-        const i = this.shadowRoot.getElementById('q');
-        if (i && q) i.value = q;
-      });
-    }
+    if (tp) tp.addEventListener('click', () => _toggleMode(true));
+    const ip = sr.getElementById('ip');
+    if (ip) ip.addEventListener('click', () => _toggleMode(false));
 
     const te = sr.getElementById('te');
     if (te) {
