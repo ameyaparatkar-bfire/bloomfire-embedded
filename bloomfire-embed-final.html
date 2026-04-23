@@ -232,9 +232,66 @@
     .chips { display:flex; flex-wrap:wrap; gap:6px; }
     .chip { padding:5px 11px; background:#fff; border:1px solid #e0e6ea; border-radius:20px; font-size:11px; color:#3ba8c4; cursor:pointer; transition:all 0.15s; font-weight:500; }
     .chip:hover { background:#eaf6fa; border-color:#3ba8c4; }
+
+    /* ── Login overlay ── */
+    #login-overlay { position:fixed; inset:0; background:rgba(13,27,53,0.93); display:flex; align-items:center; justify-content:center; z-index:9999; backdrop-filter:blur(5px); }
+    #login-overlay.hidden { display:none; }
+    .login-box { background:#fff; border-radius:12px; padding:36px 40px; width:380px; box-shadow:0 24px 64px rgba(0,0,0,0.4); display:flex; flex-direction:column; align-items:center; }
+    .login-logo { display:flex; align-items:center; gap:8px; font-size:17px; font-weight:800; color:#0d1b35; margin-bottom:22px; }
+    .login-title { font-size:20px; font-weight:800; color:#0d1b35; margin-bottom:6px; text-align:center; }
+    .login-sub { font-size:13px; color:#8fa3b1; margin-bottom:22px; text-align:center; line-height:1.5; }
+    .login-field { width:100%; margin-bottom:11px; }
+    .login-field input { width:100%; padding:11px 14px; border:1.5px solid #dde3e8; border-radius:7px; font-size:14px; color:#1a2b3c; outline:none; font-family:inherit; transition:border-color .15s,box-shadow .15s; }
+    .login-field input:focus { border-color:#3ba8c4; box-shadow:0 0 0 3px rgba(59,168,196,.15); }
+    .login-error { font-size:12px; color:#dc2626; min-height:18px; text-align:center; margin-bottom:6px; }
+    .login-submit { width:100%; padding:12px; background:#0d1b35; color:#fff; border:none; border-radius:7px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; transition:background .15s; margin-top:2px; }
+    .login-submit:hover { background:#1a2b3c; }
+    .login-hint { margin-top:18px; font-size:11px; color:#8fa3b1; text-align:center; background:#f5f7f9; border-radius:6px; padding:10px 14px; width:100%; line-height:1.75; }
+    .login-hint strong { color:#5a6e7f; }
+
+    /* ── Admin settings panel ── */
+    .admin-panel { background:#fff; border-bottom:2px solid #3ba8c4; padding:14px 16px 12px; display:flex; flex-direction:column; gap:11px; box-shadow:0 4px 16px rgba(13,27,53,0.08); flex-shrink:0; }
+    .admin-panel.hidden { display:none; }
+    .admin-panel-title { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.7px; color:#8fa3b1; }
+    .admin-row { display:flex; align-items:center; gap:9px; }
+    .admin-label { font-size:11.5px; font-weight:600; color:#1a2b3c; width:74px; flex-shrink:0; }
+    .logo-upload-btn { padding:5px 13px; background:#f5f7f9; border:1.5px dashed #c5d0d8; border-radius:6px; font-size:11.5px; color:#5a6e7f; cursor:pointer; font-family:inherit; font-weight:500; transition:all .15s; }
+    .logo-upload-btn:hover { border-color:#3ba8c4; color:#3ba8c4; background:#eaf6fa; }
+    #logo-preview-img { height:22px; max-width:80px; object-fit:contain; border-radius:3px; }
+    #logo-preview-name { font-size:10.5px; color:#5a6e7f; max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .color-swatch { width:28px; height:28px; border-radius:6px; border:2px solid #dde3e8; cursor:pointer; flex-shrink:0; padding:0; }
+    .color-hex-label { font-size:11.5px; color:#5a6e7f; font-family:monospace; font-weight:600; }
+    .admin-actions { display:flex; gap:7px; }
+    .admin-apply-btn { flex:1; padding:8px; background:#0d1b35; color:#fff; border:none; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; transition:background .15s; }
+    .admin-apply-btn:hover { background:#1a2b3c; }
+    .admin-reset-btn { padding:8px 14px; background:#f5f7f9; color:#5a6e7f; border:1.5px solid #dde3e8; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; transition:all .15s; }
+    .admin-reset-btn:hover { border-color:#e8671e; color:#e8671e; }
+    .admin-user-badge { display:inline-flex; align-items:center; gap:5px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:20px; padding:3px 10px; font-size:11px; color:#166534; font-weight:600; }
+    .gear-active { background:rgba(255,255,255,0.22) !important; color:#fff !important; }
   </style>
 </head>
 <body>
+
+<!-- ══ Login gate ══ -->
+<div id="login-overlay">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><line x1="12" y1="2" x2="12" y2="22" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><line x1="2" y1="12" x2="22" y2="12" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><line x1="19.07" y1="4.93" x2="4.93" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/></svg>
+      Bloomfire Embedded
+    </div>
+    <div class="login-title">Sign in to continue</div>
+    <div class="login-sub">Access is restricted to licensed users only</div>
+    <div class="login-field"><input type="email" id="login-email" placeholder="Email address" autocomplete="email"/></div>
+    <div class="login-field"><input type="password" id="login-pwd" placeholder="Password" autocomplete="current-password"/></div>
+    <div class="login-error" id="login-error"></div>
+    <button class="login-submit" id="login-btn">Sign in</button>
+    <div class="login-hint">
+      <strong>Demo credentials</strong><br>
+      admin@nationwide.com &nbsp;·&nbsp; demo1234<br>
+      agent@nationwide.com &nbsp;·&nbsp; demo1234
+    </div>
+  </div>
+</div>
 
 <!-- ══ Announcement bar ══ -->
 <div class="announce-bar">
@@ -447,6 +504,9 @@
         <span class="bf-panel-badge">EMBEDDED</span>
       </div>
       <div class="bf-panel-actions">
+        <button class="bf-icon-btn" id="admin-toggle" title="Admin settings" style="display:none" onclick="toggleAdminPanel(this)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="1.8"/></svg>
+        </button>
         <button class="bf-icon-btn" title="Expand">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><polyline points="15,3 21,3 21,9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="9,21 3,21 3,15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="3" x2="14" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="21" x2="10" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
@@ -455,6 +515,36 @@
         </button>
       </div>
     </div>
+
+    <!-- ══ Admin settings panel ══ -->
+    <div id="admin-panel" class="admin-panel hidden">
+      <div class="admin-panel-title">White-label Branding</div>
+      <div class="admin-row">
+        <span class="admin-label">Signed in as</span>
+        <div class="admin-user-badge">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="#166534" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="22 4 12 14.01 9 11.01" stroke="#166534" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="admin-user-name">Admin</span>
+        </div>
+      </div>
+      <div class="admin-row">
+        <span class="admin-label">Logo</span>
+        <button class="logo-upload-btn" onclick="document.getElementById('logo-file').click()">Upload logo</button>
+        <input type="file" id="logo-file" accept="image/*" style="display:none" onchange="handleLogoUpload(this)"/>
+        <img id="logo-preview-img" style="display:none"/>
+        <span id="logo-preview-name"></span>
+      </div>
+      <div class="admin-row">
+        <span class="admin-label">Brand color</span>
+        <input type="color" id="brand-color-picker" class="color-swatch" value="#3ba8c4" oninput="document.getElementById('brand-color-hex').textContent=this.value"/>
+        <span class="color-hex-label" id="brand-color-hex">#3ba8c4</span>
+        <span style="font-size:10px;color:#b0c8d4;margin-left:2px;">auto-extracted from logo</span>
+      </div>
+      <div class="admin-actions">
+        <button class="admin-apply-btn" id="admin-apply-btn" onclick="applyBranding()">Apply branding</button>
+        <button class="admin-reset-btn" onclick="resetBranding()">Reset</button>
+      </div>
+    </div>
+
     <div class="ctx-hint" id="ctx-hint">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#1a6fa8" stroke-width="1.8"/><line x1="12" y1="8" x2="12" y2="12" stroke="#1a6fa8" stroke-width="1.8" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="#1a6fa8" stroke-width="2.5" stroke-linecap="round"/></svg>
       <span class="ctx-hint-text" id="ctx-hint-text">Searching <strong>Nationwide</strong> knowledge base</span>
@@ -570,6 +660,8 @@
 
 <!-- Bloomfire Search Web Component -->
 <script>
+window._bfBrand = { color: localStorage.getItem('bf_color') || '#3ba8c4', logo: localStorage.getItem('bf_logo') || null };
+
 (function () {
 'use strict';
 
@@ -581,6 +673,23 @@ const BF = {
   borderLight: '#edf1f4', textPrimary: '#1a2b3c',
   textSecond: '#5a6e7f', textMeta: '#8fa3b1',
 };
+
+// ─── Brand helpers ─────────────────────────────────────────────────────────────
+function _hexToRgb(h) {
+  const s = h.replace('#','');
+  return [parseInt(s.slice(0,2),16), parseInt(s.slice(2,4),16), parseInt(s.slice(4,6),16)];
+}
+function _lighten(hex, a) {
+  return '#' + _hexToRgb(hex).map(v => Math.round(v+(255-v)*a).toString(16).padStart(2,'0')).join('');
+}
+function getCSS() {
+  const c = (window._bfBrand && window._bfBrand.color) || BF.teal;
+  if (c === BF.teal) return CSS;
+  return CSS
+    .split(BF.tealMid).join(_lighten(c, 0.65))
+    .split(BF.tealLight).join(_lighten(c, 0.85))
+    .split(BF.teal).join(c);
+}
 
 // ─── Mock search results ───────────────────────────────────────────────────────
 const SEARCH_RESULTS = {
@@ -903,10 +1012,14 @@ class BloomfireSearch extends HTMLElement {
       `;
     }
 
+    const _logoHtml = (window._bfBrand && window._bfBrand.logo)
+      ? `<img src="${window._bfBrand.logo}" style="height:22px;max-width:96px;object-fit:contain;display:block;">`
+      : `${LOGO_SVG} Bloomfire`;
+
     this.shadowRoot.innerHTML = `
-      <style>${CSS}</style>
+      <style>${getCSS()}</style>
       <div class="header">
-        <div class="logo">${LOGO_SVG} Bloomfire</div>
+        <div class="logo">${_logoHtml}</div>
         <div class="tabs">
           <button class="tab ${!isSynapse ? 'active' : ''}" data-mode="ask-ai">Ask AI</button>
           <button class="tab ${isSynapse ? 'active' : ''}" data-mode="synapse">Synapse</button>
@@ -1289,6 +1402,199 @@ customElements.define('bloomfire-search', BloomfireSearch);
       setTimeout(() => { btn.textContent = 'Copy code'; btn.classList.remove('copied'); }, 2500);
     });
   }
+</script>
+
+<script>
+// ── Named licensed users ──────────────────────────────────────────────────────
+const NAMED_USERS = [
+  { email: 'admin@nationwide.com', password: 'demo1234', role: 'admin', name: 'James Rourke' },
+  { email: 'agent@nationwide.com', password: 'demo1234', role: 'agent', name: 'Sarah Liu' },
+  { email: 'demo@bloomfire.com',   password: 'demo1234', role: 'admin', name: 'Bloomfire Demo' },
+];
+
+// ── Session ───────────────────────────────────────────────────────────────────
+function checkSession() {
+  const raw = sessionStorage.getItem('bf_user');
+  if (raw) { showApp(JSON.parse(raw)); return; }
+  // restore branding even before login (for color picker state)
+  const savedColor = localStorage.getItem('bf_color');
+  if (savedColor) {
+    document.getElementById('brand-color-picker').value = savedColor;
+    document.getElementById('brand-color-hex').textContent = savedColor;
+  }
+}
+
+function showApp(user) {
+  document.getElementById('login-overlay').classList.add('hidden');
+  if (user.role === 'admin') {
+    const toggle = document.getElementById('admin-toggle');
+    toggle.style.display = 'flex';
+    document.getElementById('admin-user-name').textContent = user.name;
+  }
+  // Restore saved branding
+  const savedColor = localStorage.getItem('bf_color');
+  const savedLogo  = localStorage.getItem('bf_logo');
+  const savedName  = localStorage.getItem('bf_logo_name') || '';
+  if (savedColor) {
+    document.getElementById('brand-color-picker').value = savedColor;
+    document.getElementById('brand-color-hex').textContent = savedColor;
+  }
+  if (savedLogo) {
+    window._bfBrand.logo = savedLogo;
+    const img = document.getElementById('logo-preview-img');
+    img.src = savedLogo; img.style.display = '';
+    document.getElementById('logo-preview-name').textContent = savedName;
+  }
+  if (savedColor || savedLogo) _applyBrandingToPage(true);
+}
+
+// ── Login ─────────────────────────────────────────────────────────────────────
+document.getElementById('login-btn').addEventListener('click', doLogin);
+document.getElementById('login-pwd').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('login-pwd').focus(); });
+
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const pwd   = document.getElementById('login-pwd').value;
+  const err   = document.getElementById('login-error');
+  const user  = NAMED_USERS.find(u => u.email === email && u.password === pwd);
+  if (!user) {
+    err.textContent = 'Invalid credentials or account not licensed.';
+    document.getElementById('login-pwd').value = '';
+    return;
+  }
+  err.textContent = '';
+  sessionStorage.setItem('bf_user', JSON.stringify(user));
+  showApp(user);
+}
+
+// ── Admin panel toggle ────────────────────────────────────────────────────────
+function toggleAdminPanel(btn) {
+  const panel = document.getElementById('admin-panel');
+  const opening = panel.classList.contains('hidden');
+  panel.classList.toggle('hidden', !opening);
+  btn.classList.toggle('gear-active', opening);
+}
+
+// ── Logo upload ───────────────────────────────────────────────────────────────
+function handleLogoUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const dataUrl = e.target.result;
+    window._bfBrand.logo = dataUrl;
+    const img = document.getElementById('logo-preview-img');
+    img.src = dataUrl; img.style.display = '';
+    document.getElementById('logo-preview-name').textContent = file.name;
+    // Auto-extract dominant color from logo
+    extractDominantColor(dataUrl, color => {
+      document.getElementById('brand-color-picker').value = color;
+      document.getElementById('brand-color-hex').textContent = color;
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Color extraction ──────────────────────────────────────────────────────────
+function extractDominantColor(src, callback) {
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 48;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, 48, 48);
+    const data = ctx.getImageData(0, 0, 48, 48).data;
+    const counts = {};
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+      if (a < 100) continue;
+      const brightness = (r + g + b) / 3;
+      if (brightness > 235 || brightness < 15) continue;
+      // Skip near-grey (low saturation)
+      const max = Math.max(r,g,b), min = Math.min(r,g,b);
+      if (max - min < 30) continue;
+      const rq = Math.round(r/20)*20, gq = Math.round(g/20)*20, bq = Math.round(b/20)*20;
+      const key = `${rq},${gq},${bq}`;
+      counts[key] = (counts[key]||0) + 1;
+    }
+    const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+    if (!sorted.length) { callback('#3ba8c4'); return; }
+    const [r,g,b] = sorted[0][0].split(',').map(Number);
+    callback('#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join(''));
+  };
+  img.src = src;
+}
+
+// ── Apply branding ────────────────────────────────────────────────────────────
+function applyBranding() { _applyBrandingToPage(false); }
+
+function _applyBrandingToPage(silent) {
+  const color = document.getElementById('brand-color-picker').value;
+  const logo  = window._bfBrand.logo || null;
+
+  window._bfBrand = { color, logo };
+  localStorage.setItem('bf_color', color);
+  if (logo) {
+    localStorage.setItem('bf_logo', logo);
+    localStorage.setItem('bf_logo_name', document.getElementById('logo-preview-name').textContent);
+  }
+  document.getElementById('brand-color-hex').textContent = color;
+
+  // Update outer panel header logo + accent border
+  const panelHeader = document.querySelector('.bf-panel-header');
+  const panelTitle  = document.querySelector('.bf-panel-title');
+  if (panelHeader) panelHeader.style.borderBottom = `3px solid ${color}`;
+  if (panelTitle) {
+    const badge = '<span class="bf-panel-badge" style="background:'+color+'">EMBEDDED</span>';
+    if (logo) {
+      panelTitle.innerHTML = `<img src="${logo}" style="height:18px;max-width:84px;object-fit:contain;display:block;"> ${badge}`;
+    } else {
+      panelTitle.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="12" y1="2" x2="12" y2="22" stroke="${color}" stroke-width="2.2" stroke-linecap="round"/><line x1="2" y1="12" x2="22" y2="12" stroke="${color}" stroke-width="2.2" stroke-linecap="round"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="${color}" stroke-width="2.2" stroke-linecap="round"/><line x1="19.07" y1="4.93" x2="4.93" y2="19.07" stroke="${color}" stroke-width="2.2" stroke-linecap="round"/></svg> Bloomfire ${badge}`;
+    }
+  }
+
+  // Re-render widget with new brand tokens
+  const w = document.getElementById('widget');
+  if (w) { w.render(); w._bind(); }
+
+  if (!silent) {
+    const btn = document.getElementById('admin-apply-btn');
+    if (btn) {
+      const orig = btn.textContent;
+      btn.textContent = '✓ Applied';
+      btn.style.background = '#166534';
+      setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
+    }
+  }
+}
+
+// ── Reset branding ────────────────────────────────────────────────────────────
+function resetBranding() {
+  window._bfBrand = { color: '#3ba8c4', logo: null };
+  localStorage.removeItem('bf_color');
+  localStorage.removeItem('bf_logo');
+  localStorage.removeItem('bf_logo_name');
+  document.getElementById('brand-color-picker').value = '#3ba8c4';
+  document.getElementById('brand-color-hex').textContent = '#3ba8c4';
+  const img = document.getElementById('logo-preview-img');
+  img.style.display = 'none'; img.src = '';
+  document.getElementById('logo-preview-name').textContent = '';
+  document.getElementById('logo-file').value = '';
+
+  const panelHeader = document.querySelector('.bf-panel-header');
+  const panelTitle  = document.querySelector('.bf-panel-title');
+  if (panelHeader) panelHeader.style.borderBottom = '';
+  if (panelTitle) {
+    panelTitle.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="12" y1="2" x2="12" y2="22" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><line x1="2" y1="12" x2="22" y2="12" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/><line x1="19.07" y1="4.93" x2="4.93" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/></svg> Bloomfire <span class="bf-panel-badge">EMBEDDED</span>`;
+  }
+
+  const w = document.getElementById('widget');
+  if (w) { w.render(); w._bind(); }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+checkSession();
 </script>
 </body>
 </html>
