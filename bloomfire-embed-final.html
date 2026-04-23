@@ -504,6 +504,9 @@
         <span class="bf-panel-badge">EMBEDDED</span>
       </div>
       <div class="bf-panel-actions">
+        <button class="bf-icon-btn" id="logout-btn" title="Sign out" style="display:none" onclick="doLogout()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
         <button class="bf-icon-btn" id="admin-toggle" title="Admin settings" style="display:none" onclick="toggleAdminPanel(this)">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="1.8"/></svg>
         </button>
@@ -947,7 +950,7 @@ class BloomfireSearch extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    this._mode         = 'ask-ai';
+    this._mode         = 'synapse';
     this._loading      = false;
     this._results      = null;
     this._aiAnswer     = null;
@@ -959,7 +962,7 @@ class BloomfireSearch extends HTMLElement {
   }
 
   connectedCallback() {
-    this._mode = this.getAttribute('mode') || 'ask-ai';
+    this._mode = 'synapse';
     this.render();
     this._bind();
   }
@@ -992,7 +995,7 @@ class BloomfireSearch extends HTMLElement {
           <div class="search-row">
             <input class="search-input" id="q" type="text"
               placeholder="${placeholder}" autocomplete="off"/>
-            <button class="search-btn" id="btn">${iconSearch} Search</button>
+            <button class="search-btn" id="btn">${iconSend} Ask</button>
           </div>
           ${isSynapse ? `
           <div class="synapse-pills">
@@ -1021,8 +1024,7 @@ class BloomfireSearch extends HTMLElement {
       <div class="header">
         <div class="logo">${_logoHtml}</div>
         <div class="tabs">
-          <button class="tab ${!isSynapse ? 'active' : ''}" data-mode="ask-ai">Ask AI</button>
-          <button class="tab ${isSynapse ? 'active' : ''}" data-mode="synapse">Synapse</button>
+          <button class="tab active" data-mode="synapse">Synapse</button>
         </div>
       </div>
       ${bodyHtml}
@@ -1426,6 +1428,7 @@ function checkSession() {
 
 function showApp(user) {
   document.getElementById('login-overlay').classList.add('hidden');
+  document.getElementById('logout-btn').style.display = 'flex';
   if (user.role === 'admin') {
     const toggle = document.getElementById('admin-toggle');
     toggle.style.display = 'flex';
@@ -1466,6 +1469,19 @@ function doLogin() {
   err.textContent = '';
   sessionStorage.setItem('bf_user', JSON.stringify(user));
   showApp(user);
+}
+
+// ── Logout ───────────────────────────────────────────────────────────────────
+function doLogout() {
+  sessionStorage.removeItem('bf_user');
+  document.getElementById('logout-btn').style.display = 'none';
+  document.getElementById('admin-toggle').style.display = 'none';
+  document.getElementById('admin-panel').classList.add('hidden');
+  document.getElementById('admin-toggle').classList.remove('gear-active');
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-pwd').value = '';
+  document.getElementById('login-error').textContent = '';
+  document.getElementById('login-overlay').classList.remove('hidden');
 }
 
 // ── Admin panel toggle ────────────────────────────────────────────────────────
