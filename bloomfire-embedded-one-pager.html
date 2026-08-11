@@ -152,6 +152,43 @@
     }
     .ctx-card-body p { font-size: 11px; color: var(--soft); line-height: 1.6; }
 
+    /* ── Business Benefit ── */
+    .biz-section { padding: 28px 0; border-bottom: 1px solid var(--border); }
+    .biz-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .biz-card {
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 18px 20px; background: var(--bg);
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .biz-icon {
+      width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+      background: var(--navy); display: flex; align-items: center; justify-content: center;
+    }
+    .biz-text h3 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
+    .biz-text p { font-size: 11.5px; color: var(--soft); line-height: 1.6; }
+    .biz-text strong { color: var(--text); font-weight: 600; }
+
+    /* ── GTM Talk Track ── */
+    .gtm-section { padding: 28px 0; border-bottom: 1px solid var(--border); }
+    .gtm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .gtm-card {
+      border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--white);
+    }
+    .gtm-card-header {
+      background: var(--navy); padding: 10px 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .gtm-card-header span { font-size: 11px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.8px; }
+    .gtm-card-body { padding: 14px 14px; }
+    .gtm-card-body p { font-size: 11.5px; color: var(--soft); line-height: 1.65; font-style: italic; margin-bottom: 10px; }
+    .gtm-card-body ul { padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .gtm-card-body li {
+      font-size: 11px; color: var(--soft); line-height: 1.5;
+      display: flex; gap: 7px; align-items: flex-start;
+    }
+    .gtm-card-body li::before { content: '›'; color: var(--teal); font-weight: 700; font-size: 13px; line-height: 1.2; flex-shrink: 0; }
+    .gtm-card-body strong { color: var(--text); font-weight: 600; }
+
     /* ── Integration ── */
     .int-section { padding: 28px 0; border-bottom: 1px solid var(--border); }
     .int-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center; }
@@ -346,6 +383,100 @@
           </div>
           <div class="ctx-card-body">
             <p>Customers get AI-powered answers from your knowledge base embedded directly in your support portal — reducing ticket volume and wait times.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Business Benefit -->
+    <div class="biz-section">
+      <div class="section-label">Business benefit</div>
+      <div class="biz-grid">
+        <div class="biz-card">
+          <div class="biz-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#3ba8c4" stroke-width="2"/><polyline points="12,6 12,12 16,14" stroke="#3ba8c4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="biz-text">
+            <h3>Measurable time savings per agent</h3>
+            <p>Each knowledge lookup costs <strong>30–90 seconds</strong> in context switching. At 20–40 cases per agent per day, eliminating tab switching reclaims hours per agent per week — with no process change required.</p>
+          </div>
+        </div>
+        <div class="biz-card">
+          <div class="biz-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#3ba8c4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="biz-text">
+            <h3>Consistent, compliant answers</h3>
+            <p>Agents under time pressure improvise. Embedded surfaces the <strong>authoritative, governance-approved answer</strong> at the moment it's needed — reducing compliance risk and inconsistent customer outcomes.</p>
+          </div>
+        </div>
+        <div class="biz-card">
+          <div class="biz-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><line x1="18" y1="20" x2="18" y2="10" stroke="#3ba8c4" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="20" x2="12" y2="4" stroke="#3ba8c4" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="20" x2="6" y2="14" stroke="#3ba8c4" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="biz-text">
+            <h3>Higher ROI on knowledge investment</h3>
+            <p>Organizations invest heavily in Bloomfire communities. Embedded <strong>closes the last-mile gap</strong> — ensuring that investment is used at the exact moment a decision is being made, not after the call.</p>
+          </div>
+        </div>
+        <div class="biz-card">
+          <div class="biz-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="#3ba8c4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="#3ba8c4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="biz-text">
+            <h3>Defensible, sticky integration</h3>
+            <p>Once the widget is embedded in a claims portal or CRM, replacing it requires <strong>engineering effort on the customer side</strong> — not just a software switch. Embedded deepens the Bloomfire relationship at the operational layer.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GTM Talk Track -->
+    <div class="gtm-section">
+      <div class="section-label">GTM talk track</div>
+      <div class="gtm-grid">
+        <div class="gtm-card">
+          <div class="gtm-card-header">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#3ba8c4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Open &amp; Discover</span>
+          </div>
+          <div class="gtm-card-body">
+            <p>"How often do your agents leave their screen to look something up during a live interaction?"</p>
+            <ul>
+              <li>How many knowledge searches does a typical agent run per day?</li>
+              <li>What does a 30-second pause on a live call cost you in customer experience?</li>
+              <li>How do you make sure agents give consistent answers under time pressure?</li>
+            </ul>
+          </div>
+        </div>
+        <div class="gtm-card">
+          <div class="gtm-card-header">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="#3ba8c4" stroke-width="2.2" stroke-linejoin="round"/></svg>
+            <span>Demo &amp; Position</span>
+          </div>
+          <div class="gtm-card-body">
+            <p>"Let me show you what it looks like when Bloomfire is already inside the portal — no tab switching, no re-typing the query."</p>
+            <ul>
+              <li>Demo semantic search inside the mock claims portal</li>
+              <li>Show Synapse AI returning a sourced, plain-language answer</li>
+              <li>Highlight the white-label: logo, brand color, no Bloomfire branding visible</li>
+              <li>Show the three-line integration snippet — <strong>no build step, no npm</strong></li>
+            </ul>
+          </div>
+        </div>
+        <div class="gtm-card">
+          <div class="gtm-card-header">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12" stroke="#3ba8c4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Handle &amp; Close</span>
+          </div>
+          <div class="gtm-card-body">
+            <p>"We can have a working demo inside a replica of your environment within a week — before any contract conversation."</p>
+            <ul>
+              <li><strong>IT asks about framework:</strong> Web Component — works in Angular, React, Vue, or plain HTML</li>
+              <li><strong>IT asks about auth:</strong> You pass your existing bearer token; the widget never prompts the user</li>
+              <li><strong>Asks about placement:</strong> You own the placement entirely — move it any time with no changes on our side</li>
+              <li><strong>Asks about pricing:</strong> Add-on to existing Bloomfire package; not a separate SKU</li>
+            </ul>
           </div>
         </div>
       </div>
