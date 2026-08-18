@@ -740,25 +740,25 @@ function getCSS() {
 // ─── Mock search results ───────────────────────────────────────────────────────
 const SEARCH_RESULTS = {
   'how do I process a homeowner claim': [
-    { title: 'Homeowner Claims Processing Guide', type: 'Series', snippet: 'Step-by-step guide covering intake, initial assessment, adjuster assignment, documentation requirements, and state-mandated resolution timelines.', author: 'Claims Team', date: 'Jan 15, 2026', id: 'hc-001' },
-    { title: 'Adjuster Assignment SOP', type: 'Post', snippet: 'SOP for assigning adjusters based on claim value. Claims above $5,000 require a licensed field adjuster within 24 hours of the initial report.', author: 'Operations', date: 'Feb 3, 2026', id: 'aa-002' },
-    { title: 'Required Documentation Checklist', type: 'Post', snippet: 'Complete list of required forms and evidence for homeowner claims, including HO-3, supplemental damage reports, contractor estimates, and photo documentation.', author: 'Compliance', date: 'Dec 10, 2025', id: 'rd-003' },
-    { title: 'State Mandated Resolution Timelines', type: 'Post', snippet: 'Ohio: 21 days, Michigan: 60 days, Pennsylvania: 30 days. Non-compliance may result in regulatory penalties.', author: 'Legal', date: 'Nov 22, 2025', id: 'st-004' },
+    { title: 'Homeowner Claims Processing Guide', type: 'Series', snippet: 'Step-by-step guide covering intake, initial assessment, adjuster assignment, documentation requirements, and state-mandated resolution timelines.', author: 'Claims Team', date: 'Jan 15, 2026', id: 'hc-001', group: 'claims', category: 'sop' },
+    { title: 'Adjuster Assignment SOP', type: 'Post', snippet: 'SOP for assigning adjusters based on claim value. Claims above $5,000 require a licensed field adjuster within 24 hours of the initial report.', author: 'Operations', date: 'Feb 3, 2026', id: 'aa-002', group: 'operations', category: 'adjuster' },
+    { title: 'Required Documentation Checklist', type: 'Post', snippet: 'Complete list of required forms and evidence for homeowner claims, including HO-3, supplemental damage reports, contractor estimates, and photo documentation.', author: 'Compliance', date: 'Dec 10, 2025', id: 'rd-003', group: 'compliance', category: 'compliance' },
+    { title: 'State Mandated Resolution Timelines', type: 'Post', snippet: 'Ohio: 21 days, Michigan: 60 days, Pennsylvania: 30 days. Non-compliance may result in regulatory penalties.', author: 'Legal', date: 'Nov 22, 2025', id: 'st-004', group: 'legal', category: 'state-reqs' },
   ],
   'what are the michigan auto insurance requirements': [
-    { title: 'State Requirements — Michigan Auto', type: 'Series', snippet: 'Michigan requires PIP, PPI of at least $1M, and Residual Liability Insurance. Since 2020 reform, drivers may elect their PIP level from unlimited down to opt-out.', author: 'Compliance', date: 'Mar 1, 2026', id: 'mi-001' },
-    { title: 'Michigan No-Fault Reform Summary', type: 'Post', snippet: 'Overview of the 2020 Michigan No-Fault reform: new PIP election options, mini-tort updates, and bodily injury liability minimums ($250K/$500K).', author: 'Legal', date: 'Feb 14, 2026', id: 'mi-002' },
-    { title: 'Minimum Liability Standards by State', type: 'Post', snippet: 'State-by-state breakdown of minimum auto liability requirements. Includes recent legislative changes for MI, OH, PA, and FL.', author: 'Underwriting', date: 'Jan 30, 2026', id: 'ml-003' },
+    { title: 'State Requirements — Michigan Auto', type: 'Series', snippet: 'Michigan requires PIP, PPI of at least $1M, and Residual Liability Insurance. Since 2020 reform, drivers may elect their PIP level from unlimited down to opt-out.', author: 'Compliance', date: 'Mar 1, 2026', id: 'mi-001', group: 'compliance', category: 'state-reqs' },
+    { title: 'Michigan No-Fault Reform Summary', type: 'Post', snippet: 'Overview of the 2020 Michigan No-Fault reform: new PIP election options, mini-tort updates, and bodily injury liability minimums ($250K/$500K).', author: 'Legal', date: 'Feb 14, 2026', id: 'mi-002', group: 'legal', category: 'state-reqs' },
+    { title: 'Minimum Liability Standards by State', type: 'Post', snippet: 'State-by-state breakdown of minimum auto liability requirements. Includes recent legislative changes for MI, OH, PA, and FL.', author: 'Underwriting', date: 'Jan 30, 2026', id: 'ml-003', group: 'underwriting', category: 'state-reqs' },
   ],
   'adjuster assignment guidelines': [
-    { title: 'Adjuster Assignment SOP', type: 'Post', snippet: 'SOP for assigning adjusters based on claim value. Claims above $5,000 require a licensed field adjuster within 24 hours of the initial report.', author: 'Operations', date: 'Feb 3, 2026', id: 'aa-002' },
-    { title: 'Field vs. Desk Adjuster Decision Tree', type: 'Post', snippet: 'Decision framework for routing claims to field or desk adjusters. Factors include claim type, estimated value, customer tier, and geographic availability.', author: 'Claims Team', date: 'Jan 8, 2026', id: 'adj-005' },
-    { title: 'Adjuster Certification Requirements', type: 'Series', snippet: 'State-by-state certification and licensing requirements for field adjusters. Includes renewal timelines, CE credits, and reciprocity agreements.', author: 'HR & Compliance', date: 'Dec 5, 2025', id: 'adj-006' },
+    { title: 'Adjuster Assignment SOP', type: 'Post', snippet: 'SOP for assigning adjusters based on claim value. Claims above $5,000 require a licensed field adjuster within 24 hours of the initial report.', author: 'Operations', date: 'Feb 3, 2026', id: 'aa-002', group: 'operations', category: 'adjuster' },
+    { title: 'Field vs. Desk Adjuster Decision Tree', type: 'Post', snippet: 'Decision framework for routing claims to field or desk adjusters. Factors include claim type, estimated value, customer tier, and geographic availability.', author: 'Claims Team', date: 'Jan 8, 2026', id: 'adj-005', group: 'claims', category: 'adjuster' },
+    { title: 'Adjuster Certification Requirements', type: 'Series', snippet: 'State-by-state certification and licensing requirements for field adjusters. Includes renewal timelines, CE credits, and reciprocity agreements.', author: 'HR & Compliance', date: 'Dec 5, 2025', id: 'adj-006', group: 'hr', category: 'adjuster' },
   ],
   default: [
-    { title: 'Claims Handling — Quick Reference Guide', type: 'Post', snippet: 'Concise reference covering the most common claim scenarios, escalation paths, required documentation, and SLA timelines.', author: 'Claims Team', date: 'Feb 20, 2026', id: 'gen-001' },
-    { title: 'Policy Administration Guide', type: 'Series', snippet: 'Comprehensive guide to policy lifecycle management — from issuance through renewal, endorsement, cancellation, and reinstatement.', author: 'Policy Admin', date: 'Jan 10, 2026', id: 'gen-002' },
-    { title: 'Customer Communication Standards', type: 'Post', snippet: 'Standards for written and verbal communication with policyholders during the claims process, including required disclosures and response SLAs.', author: 'Customer Experience', date: 'Dec 18, 2025', id: 'gen-003' },
+    { title: 'Claims Handling — Quick Reference Guide', type: 'Post', snippet: 'Concise reference covering the most common claim scenarios, escalation paths, required documentation, and SLA timelines.', author: 'Claims Team', date: 'Feb 20, 2026', id: 'gen-001', group: 'claims', category: 'sop' },
+    { title: 'Policy Administration Guide', type: 'Series', snippet: 'Comprehensive guide to policy lifecycle management — from issuance through renewal, endorsement, cancellation, and reinstatement.', author: 'Policy Admin', date: 'Jan 10, 2026', id: 'gen-002', group: 'operations', category: 'policy' },
+    { title: 'Customer Communication Standards', type: 'Post', snippet: 'Standards for written and verbal communication with policyholders during the claims process, including required disclosures and response SLAs.', author: 'Customer Experience', date: 'Dec 18, 2025', id: 'gen-003', group: 'claims', category: 'cx' },
   ],
 };
 
@@ -811,6 +811,34 @@ const FOLLOWUP_RESPONSES = {
     default: "Based on the knowledge base, I'd recommend reviewing the source articles linked above for full context. For policy-specific questions, check the declarations page in Optimus. For process questions, the Claims Handling Quick Reference Guide covers most common scenarios. What specific aspect can I help you dig into?",
   },
 };
+
+// ─── Groups & Categories ───────────────────────────────────────────────────────
+const MOCK_GROUPS = [
+  { id: 'all',          label: 'All Groups' },
+  { id: 'claims',       label: 'Claims' },
+  { id: 'legal',        label: 'Legal' },
+  { id: 'compliance',   label: 'Compliance' },
+  { id: 'operations',   label: 'Operations' },
+  { id: 'underwriting', label: 'Underwriting' },
+  { id: 'hr',           label: 'HR & Training' },
+];
+
+const MOCK_CATEGORIES = [
+  { id: 'all',        label: 'All Categories' },
+  { id: 'sop',        label: 'SOPs & Procedures' },
+  { id: 'state-reqs', label: 'State Requirements' },
+  { id: 'policy',     label: 'Policy Administration' },
+  { id: 'adjuster',   label: 'Adjuster Guidelines' },
+  { id: 'compliance', label: 'Compliance & Regulatory' },
+  { id: 'cx',         label: 'Customer Experience' },
+];
+
+function applyScope(results, group, category) {
+  return results.filter(r =>
+    (group === 'all' || r.group === group) &&
+    (category === 'all' || r.category === category)
+  );
+}
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 function getSearchResults(query) {
@@ -995,6 +1023,12 @@ const CSS = `
 .ctx-toggle.open .chev{transform:rotate(180deg);}
 .ctx-body{display:none;padding:9px 12px;font-size:11.5px;line-height:1.6;color:#166534;border-top:1px solid #bbf7d0;font-style:italic;word-break:break-word;}
 .ctx-body.visible{display:block;}
+.scope-row{display:flex;gap:7px;margin-top:8px;align-items:center;}
+.scope-label{font-size:10px;font-weight:700;color:${BF.textMeta};text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;}
+.scope-select{flex:1;padding:5px 26px 5px 9px;border:1.5px solid ${BF.border};border-radius:6px;font-size:11.5px;color:${BF.textPrimary};background:${BF.white};outline:none;font-family:inherit;cursor:pointer;transition:border-color .15s,color .15s,background .15s;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%238fa3b1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;}
+.scope-select:focus{border-color:${BF.teal};}
+.scope-select.scope-active{border-color:${BF.teal};color:${BF.teal};background-color:${BF.tealLight};}
+.scope-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;background:${BF.tealLight};border:1px solid ${BF.tealMid};color:${BF.teal};white-space:nowrap;flex-shrink:0;}
 `;
 
 // ─── Web Component ─────────────────────────────────────────────────────────────
@@ -1004,15 +1038,17 @@ class BloomfireSearch extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    this._mode         = 'synapse';
-    this._loading      = false;
-    this._results      = null;
-    this._aiAnswer     = null;
-    this._thinking     = null;
-    this._showThinking = false;
-    this._thinkingOpen = false;
-    this._lastQuery    = '';
-    this._conversation = [];
+    this._mode             = 'synapse';
+    this._loading          = false;
+    this._results          = null;
+    this._aiAnswer         = null;
+    this._thinking         = null;
+    this._showThinking     = false;
+    this._thinkingOpen     = false;
+    this._lastQuery        = '';
+    this._conversation     = [];
+    this._selectedGroup    = 'all';
+    this._selectedCategory = 'all';
   }
 
   connectedCallback() {
@@ -1027,6 +1063,7 @@ class BloomfireSearch extends HTMLElement {
       this._mode = newVal;
       this._results = null; this._aiAnswer = null;
       this._loading = false; this._conversation = [];
+      this._selectedGroup = 'all'; this._selectedCategory = 'all';
       this.render(); this._bind();
     }
   }
@@ -1062,6 +1099,15 @@ class BloomfireSearch extends HTMLElement {
               </div>
             </div>
           </div>` : ''}
+          <div class="scope-row">
+            <span class="scope-label">Scope</span>
+            <select class="scope-select${this._selectedGroup !== 'all' ? ' scope-active' : ''}" id="scope-group">
+              ${MOCK_GROUPS.map(g => `<option value="${g.id}"${this._selectedGroup === g.id ? ' selected' : ''}>${g.label}</option>`).join('')}
+            </select>
+            <select class="scope-select${this._selectedCategory !== 'all' ? ' scope-active' : ''}" id="scope-cat">
+              ${MOCK_CATEGORIES.map(c => `<option value="${c.id}"${this._selectedCategory === c.id ? ' selected' : ''}>${c.label}</option>`).join('')}
+            </select>
+          </div>
         </div>
         <div class="results" id="res">
           ${this._loading
@@ -1185,7 +1231,13 @@ class BloomfireSearch extends HTMLElement {
         <span class="conv-header-query">
           <strong>Synapse</strong> &nbsp;·&nbsp; ${firstUserMsg}
         </span>
-        <button class="conv-new-btn" id="conv-new">${iconPlus} New conversation</button>
+        ${(() => {
+          const gl = MOCK_GROUPS.find(g => g.id === this._selectedGroup)?.label || '';
+          const cl = MOCK_CATEGORIES.find(c => c.id === this._selectedCategory)?.label || '';
+          const parts = [gl !== 'All Groups' ? gl : '', cl !== 'All Categories' ? cl : ''].filter(Boolean);
+          return parts.length ? `<span class="scope-badge">${parts.join(' · ')}</span>` : '';
+        })()}
+        <button class="conv-new-btn" id="conv-new">${iconPlus} New</button>
       </div>
       <div class="results conv-mode">
         <div class="conv-thread" id="conv-thread">${threadHtml}</div>
@@ -1260,14 +1312,24 @@ class BloomfireSearch extends HTMLElement {
     }
 
     if (this._results && this._results.length) {
-      const typeClass = { Series: 'type-series', Post: 'type-post', 'Q&A': 'type-qa' };
+      const typeClass    = { Series: 'type-series', Post: 'type-post', 'Q&A': 'type-qa' };
+      const scoped       = applyScope(this._results, this._selectedGroup, this._selectedCategory);
+      const scopeActive  = this._selectedGroup !== 'all' || this._selectedCategory !== 'all';
+      const groupLabel   = MOCK_GROUPS.find(g => g.id === this._selectedGroup)?.label || '';
+      const catLabel     = MOCK_CATEGORIES.find(c => c.id === this._selectedCategory)?.label || '';
+      const scopeParts   = [groupLabel !== 'All Groups' ? groupLabel : '', catLabel !== 'All Categories' ? catLabel : ''].filter(Boolean);
       html += `
         <div class="results-section">
           <div class="results-header">
             <div class="results-label">${iconSearchGray} Search Results</div>
-            <span class="results-count">${this._results.length} articles found</span>
+            <div style="display:flex;align-items:center;gap:6px;">
+              ${scopeActive ? `<span class="scope-badge">${scopeParts.join(' · ')}</span>` : ''}
+              <span class="results-count">${scoped.length}${scopeActive ? ` of ${this._results.length}` : ''} article${scoped.length !== 1 ? 's' : ''}</span>
+            </div>
           </div>
-          ${this._results.map(r => `
+          ${scoped.length === 0
+            ? `<div class="empty" style="padding:24px 16px"><p>No results match the selected scope. Try broadening your group or category filter.</p></div>`
+            : scoped.map(r => `
             <a class="result-card" href="https://app.bloomfire.com/posts/${r.id}" target="_blank">
               <div class="result-icon">${getTypeIcon(r.type)}</div>
               <div class="result-body">
@@ -1296,6 +1358,7 @@ class BloomfireSearch extends HTMLElement {
       t.addEventListener('click', () => {
         this._results = null; this._aiAnswer = null;
         this._loading = false; this._conversation = [];
+        this._selectedGroup = 'all'; this._selectedCategory = 'all';
         this.setAttribute('mode', t.dataset.mode);
       })
     );
@@ -1357,6 +1420,21 @@ class BloomfireSearch extends HTMLElement {
     const thread = sr.getElementById('conv-thread');
     if (thread) {
       requestAnimationFrame(() => { thread.scrollTop = thread.scrollHeight; });
+    }
+
+    const scopeGroup = sr.getElementById('scope-group');
+    if (scopeGroup) {
+      scopeGroup.addEventListener('change', () => {
+        this._selectedGroup = scopeGroup.value;
+        this.render(); this._bind();
+      });
+    }
+    const scopeCat = sr.getElementById('scope-cat');
+    if (scopeCat) {
+      scopeCat.addEventListener('change', () => {
+        this._selectedCategory = scopeCat.value;
+        this.render(); this._bind();
+      });
     }
   }
 
