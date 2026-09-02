@@ -302,8 +302,8 @@
     <button class="login-submit" id="login-btn">Sign in</button>
     <div class="login-hint">
       <strong>Demo credentials</strong><br>
-      admin@nationwide.com &nbsp;·&nbsp; demo1234<br>
-      agent@nationwide.com &nbsp;·&nbsp; demo1234
+      admin@acmecorp.com &nbsp;·&nbsp; demo1234<br>
+      agent@acmecorp.com &nbsp;·&nbsp; demo1234
     </div>
   </div>
 </div>
@@ -486,7 +486,7 @@
     <!-- ── CONTEXT: Help Center ── -->
     <div class="app-content ctx-panel" id="ctx-help" style="display:none;">
       <div class="help-topbar">
-        <div class="help-logo">Nationwide <span>Help</span></div>
+        <div class="help-logo">ACME Corporation <span>Help</span></div>
         <nav class="help-nav">
           <div class="help-nav-item active">Home</div>
           <div class="help-nav-item">My Claims</div>
@@ -589,11 +589,11 @@
 
     <div class="ctx-hint" id="ctx-hint">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#1a6fa8" stroke-width="1.8"/><line x1="12" y1="8" x2="12" y2="12" stroke="#1a6fa8" stroke-width="1.8" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="#1a6fa8" stroke-width="2.5" stroke-linecap="round"/></svg>
-      <span class="ctx-hint-text" id="ctx-hint-text">Searching <strong>Nationwide</strong> knowledge base</span>
+      <span class="ctx-hint-text" id="ctx-hint-text">Searching <strong>ACME Corporation</strong> knowledge base</span>
       <span class="ctx-chip" data-q="homeowner claim process" onclick="quickSearch(this)">Try: homeowner claim</span>
     </div>
     <div class="bf-panel-body">
-      <bloomfire-search id="widget" mode="search" community-id="Nationwide" token="mock-token"></bloomfire-search>
+      <bloomfire-search id="widget" mode="search" community-id="ACME" token="mock-token"></bloomfire-search>
     </div>
   </div>
 
@@ -1515,9 +1515,9 @@ customElements.define('bloomfire-search', BloomfireSearch);
 
   // Context switcher
   const ctxHints = {
-    claims: { text: 'Searching <strong>Nationwide</strong> knowledge base', chip: 'Try: homeowner claim', query: 'homeowner claim process' },
+    claims: { text: 'Searching <strong>ACME Corporation</strong> knowledge base', chip: 'Try: homeowner claim', query: 'homeowner claim process' },
     crm:    { text: 'Searching <strong>Bloomfire Sales</strong> enablement content', chip: 'Try: competitive intel', query: 'adjuster assignment' },
-    help:   { text: 'Searching <strong>Nationwide Help</strong> content for customers', chip: 'Try: file a claim', query: 'homeowner claim process' },
+    help:   { text: 'Searching <strong>ACME Corporation Help</strong> content for customers', chip: 'Try: file a claim', query: 'homeowner claim process' },
   };
 
   function switchContext(ctx, btn) {
@@ -1638,8 +1638,8 @@ function clearSystemPrompt() {
 
 // ── Named licensed users ──────────────────────────────────────────────────────
 const NAMED_USERS = [
-  { email: 'admin@nationwide.com', password: 'demo1234', role: 'admin', name: 'James Rourke' },
-  { email: 'agent@nationwide.com', password: 'demo1234', role: 'agent', name: 'Sarah Liu' },
+  { email: 'admin@acmecorp.com', password: 'demo1234', role: 'admin', name: 'James Rourke' },
+  { email: 'agent@acmecorp.com', password: 'demo1234', role: 'agent', name: 'Sarah Liu' },
   { email: 'demo@bloomfire.com',   password: 'demo1234', role: 'admin', name: 'Bloomfire Demo' },
 ];
 
