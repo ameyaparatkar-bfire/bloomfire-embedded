@@ -283,6 +283,47 @@
     .admin-save-btn:hover { background:#155d8e; }
     .admin-clear-btn { padding:7px 12px; background:#f5f7f9; color:#5a6e7f; border:1.5px solid #dde3e8; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; transition:all .15s; }
     .admin-clear-btn:hover { border-color:#e8671e; color:#e8671e; }
+
+    /* ── Floating Action Button ── */
+    #bf-fab {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 54px; height: 54px; border-radius: 50%;
+      background: #0d1b35; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(13,27,53,0.40);
+      z-index: 8000;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.18s;
+    }
+    #bf-fab:hover { background: #1a2b3c; box-shadow: 0 6px 28px rgba(13,27,53,0.50); transform: scale(1.07); }
+    #bf-fab .fab-icon-search { display: flex; }
+    #bf-fab.open .fab-icon-search { display: none; }
+    #bf-fab .fab-icon-close { display: none; }
+    #bf-fab.open .fab-icon-close { display: flex; }
+
+    /* ── Floating panel ── */
+    #bf-float-panel {
+      position: fixed; bottom: 90px; right: 24px;
+      width: 380px; height: 540px;
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 8px 40px rgba(13,27,53,0.22);
+      border: 1px solid #dde3e8;
+      display: flex; flex-direction: column; overflow: hidden;
+      z-index: 7999;
+      transform-origin: bottom right;
+      transform: scale(0.88) translateY(8px);
+      opacity: 0; pointer-events: none;
+      transition: transform 0.22s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.18s ease;
+    }
+    #bf-float-panel.open {
+      transform: scale(1) translateY(0);
+      opacity: 1; pointer-events: auto;
+    }
+    .bf-float-header {
+      background: #0d1b35; padding: 10px 14px;
+      display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+    }
+    .bf-float-title { display: flex; align-items: center; gap: 7px; color: #fff; font-size: 12px; font-weight: 700; }
+    .bf-float-body { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
   </style>
 </head>
 <body>
@@ -1848,8 +1889,63 @@ function resetBranding() {
   if (w) { w.render(); w._bind(); }
 }
 
+// ── Floating panel toggle ─────────────────────────────────────────────────────
+function toggleFloatPanel() {
+  const panel = document.getElementById('bf-float-panel');
+  const fab   = document.getElementById('bf-fab');
+  const open  = !panel.classList.contains('open');
+  panel.classList.toggle('open', open);
+  fab.classList.toggle('open', open);
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 checkSession();
 </script>
+<!-- ══ Floating Bloomfire Button + Panel ══ -->
+<button id="bf-fab" title="Search with Bloomfire" onclick="toggleFloatPanel()">
+  <span class="fab-icon-search">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <line x1="12" y1="2" x2="12" y2="22" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="2" y1="12" x2="22" y2="12" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="19.07" y1="4.93" x2="4.93" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="fab-icon-close">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <line x1="18" y1="6" x2="6" y2="18" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="6" y1="6" x2="18" y2="18" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+
+<div id="bf-float-panel">
+  <div class="bf-float-header">
+    <div class="bf-float-title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+        <line x1="12" y1="2" x2="12" y2="22" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="2" y1="12" x2="22" y2="12" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="19.07" y1="4.93" x2="4.93" y2="19.07" stroke="#3ba8c4" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      Bloomfire
+      <span class="bf-panel-badge">EMBEDDED</span>
+    </div>
+    <button class="bf-icon-btn" onclick="toggleFloatPanel()" title="Close">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+        <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+  <div class="ctx-hint">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#1a6fa8" stroke-width="1.8"/><line x1="12" y1="8" x2="12" y2="12" stroke="#1a6fa8" stroke-width="1.8" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="#1a6fa8" stroke-width="2.5" stroke-linecap="round"/></svg>
+    <span class="ctx-hint-text">Searching <strong>ACME Corporation</strong> knowledge base</span>
+  </div>
+  <div class="bf-float-body">
+    <bloomfire-search id="widget-float" mode="search" community-id="ACME" token="mock-token"></bloomfire-search>
+  </div>
+</div>
+
 </body>
 </html>
