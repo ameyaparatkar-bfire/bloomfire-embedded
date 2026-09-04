@@ -1891,11 +1891,13 @@ function resetBranding() {
 
 // ── Floating panel toggle ─────────────────────────────────────────────────────
 function toggleFloatPanel() {
-  const panel = document.getElementById('bf-float-panel');
-  const fab   = document.getElementById('bf-fab');
-  const open  = !panel.classList.contains('open');
+  const panel    = document.getElementById('bf-float-panel');
+  const fab      = document.getElementById('bf-fab');
+  const fixedPanel = document.querySelector('.bf-panel');
+  const open     = !panel.classList.contains('open');
   panel.classList.toggle('open', open);
   fab.classList.toggle('open', open);
+  if (fixedPanel) fixedPanel.style.display = open ? 'none' : '';
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
